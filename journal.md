@@ -22,3 +22,74 @@ g++ ../main.cpp -o app.exe $(pkg-config --cflags --libs sdl3)
 # Run:
 ./app.exe
 ```
+
+## Step 3: Add a Renderer:
+- Using SDL_Image, we created LTexture(Lazy Texture) class to wrap SDL_Texture class.
+- We modified our `init()`, `loadMedia()`, `close()` to make use of our LTexture class
+- we added two new global constants `gRenderer` and `gPngTexture`, a Renderer and our LTexture wrapper class.
+- In the function `bool init();` we now create a renderer with the window.
+- This function `bool loadMedia();` loads images using our LTexture wrapper class.
+- This function `void close();` cleans up the resourse used to load the window and renderer and destroys our texture.
+```bash
+bool init()
+{
+    # Initialization Flag
+    bool success{ true };
+    
+    if (SDL_Init(SDL_INIT_VIDEO) == false)
+    {
+        SDL_Log("SDL could not initialize! SDL Error: %s/n", SDL_GetError());
+        success = false;
+    } else 
+    {
+        # Create Window with Renderer
+        if (SDL_CreateWindowAndRenderer(
+            "Particle SImulation: Texture And Extension Libraries", 
+            screenConstants::kScreenWidth, 
+            screenConstants::kScreenHeight,
+            0,
+            &global::gWindow,
+            &global::gRenderer
+            ) == false
+        ){
+            SDL_Log("Window Could Not Be Created! SDL Error: %s/n", SDL_GetError());
+            success = false;
+        }
+
+    }
+
+    SDL_Log("SDL Initialized Succesfully");
+    return success;
+}
+
+bool loadMedia()
+{
+    # File loading flag
+    bool success{ true };
+
+    # Load splash image
+    if (global::gPngTexture.loadFromFile("assets/loaded.png") == false)
+    {
+        SDL_Log("Unable To Load PNG Image!\n");
+        success = false;
+    }
+
+    return success;
+}
+
+void close()
+{
+
+    # Clean up Texture
+    global::gPngTexture.destroy();
+
+    # Destroy Window
+    SDL_DestroyRenderer( global::gRenderer );
+    global::gRenderer = nullptr;
+    SDL_DestroyWindow( global::gWindow ); 
+    global::gWindow = nullptr;
+
+    # Quit SDL subsystems
+    SDL_Quit();
+}
+```
