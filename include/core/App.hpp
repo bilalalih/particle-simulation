@@ -28,7 +28,12 @@ namespace core
         void close();
 
         // Render functions.
-        void render_circle_with_dark_bckgrd(Color& color, Particle& particle);
+        void beginFrame();
+        void drawParticle(
+            Color& color,
+            Particle& particle
+        );
+        void endFrame();
         void render_img(Color& color);
         void render_rectangle_with_dark_background(Color& color);
 

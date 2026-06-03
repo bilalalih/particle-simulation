@@ -67,24 +67,36 @@ namespace core
         SDL_Quit();
     }
 
-    void App::render_circle_with_dark_bckgrd(Color& color, Particle& particle)
+    void App::beginFrame()
     {
-        if (pngTexture.isLoaded() == true)
-        {
-            SDL_Log("There is aTexture To Render!\n");
-            return;
-        }
-        // Fill the background black
-        Color darkBckgrd{ 20, 20, 30, 255 };
-        setDrawColor(darkBckgrd);
-        SDL_RenderClear(windowAndRenderer.renderer);
+        Color bg{20,20,30,255};
 
-        // circle
+        setDrawColor(bg);
+
+        SDL_RenderClear(
+            windowAndRenderer.renderer
+        );
+    }
+
+    void App::drawParticle(
+    Color& color,
+    Particle& particle)
+    {
         setDrawColor(color);
-        rendering::drawCircle(windowAndRenderer.renderer, particle.getX(), particle.getY(), particle.getRadius());
 
-        // Update screen
-        SDL_RenderPresent(windowAndRenderer.renderer);
+        rendering::drawCircle(
+            windowAndRenderer.renderer,
+            particle.getX(),
+            particle.getY(),
+            particle.getRadius()
+        );
+    }
+
+    void App::endFrame()
+    {
+        SDL_RenderPresent(
+            windowAndRenderer.renderer
+        );
     }
 
     void App::render_img(Color& color)
@@ -159,4 +171,6 @@ namespace core
     {
         SDL_SetRenderDrawColor(windowAndRenderer.renderer, color.r, color.g, color.b, color.a);
     }
+
+
 }

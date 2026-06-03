@@ -33,25 +33,24 @@ int main(int argc, char* argv[])
             SDL_Event(e);
             SDL_zero(e);
 
-            // Create a particle
-            Particle p(application.getScreenWidth()/2, application.getScreenHeight()/2, 20, 10);
-            // Create a draw object
+            // Create an empty particle space
+            std::vector<Particle> particles;
+
+            // color object
             core::Color whiteColor{ 255, 255, 255, 255 }; // White color
+            
             Uint64 previous = SDL_GetTicks();
+
+            int height = application.getScreenHeight();
+            float gravity = 500;
         
             // The main loop
             while (quit == false)
             {
-                // State update: dt = 0.001
-                std::vector<Particle> particles;
 
-                Uint64 current = SDL_GetTicks();
-                    
-                float velocity = 60;
+                Uint64 current = SDL_GetTicks();    
                 float dt = (current - previous) / 1000.0f;
-                    
-                int height = application.getScreenHeight();
-                float gravity = 500;
+                previous = current;
 
                 // Get event data
                 while (SDL_PollEvent( &e ) == true)
@@ -65,8 +64,7 @@ int main(int argc, char* argv[])
                         newParticle.position.at(0) = mx;
                         newParticle.position.at(1) = my;
                         newParticle.velocity.at(0) = 0;
-                        newParticle.velocity.at(0) = 0;
-                        application.render_circle_with_dark_bckgrd(whiteColor, newParticle);
+                        newParticle.velocity.at(1) = 0;
                         particles.push_back( newParticle);
                     } else if (e.type == SDL_EVENT_QUIT)
                     {
@@ -74,21 +72,22 @@ int main(int argc, char* argv[])
                         quit = true;
                     }
                 }
-                for ( auto& p : particles)
+
+                application.beginFrame();
+                // update state
+                if (!particles.empty())
                 {
-                    if (p.getY() > ( height - 20 ) || p.getY() < 0 ) // bounce
+                    for (auto& p : particles)
                     {
-                        p.position.at(1) = (height - 20);
-                        p.velocity.at(1) *= -0.8f;
+                        p.velocity.at(1) += gravity * dt;
+
+                        p.position.at(0) += p.velocity.at(0) * dt;
+                        p.position.at(1) += p.velocity.at(1) * dt ;
+
+                        application.drawParticle(whiteColor, p);
                     }
-                    
-                    p.velocity.at(1) += gravity * dt;
-                    p.position.at(1) += p.velocity.at(1) * dt;
-                    
-                    // Render
-                    application.render_circle_with_dark_bckgrd(whiteColor, p);
                 }
-                previous = current;
+                application.endFrame();
             }
         }
     // Clean up
