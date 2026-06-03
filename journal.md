@@ -1,9 +1,9 @@
 # Building a Single Particle Simulation
 
-## Step 1: Create a main.cpp file using:
-- `touch main.cpp`
+### Step 1: Create a main.cpp file using:
+> `touch main.cpp`
 
-## Step 2: Create a SDL3 Window:
+### Step 2: Create a SDL3 Window:
 - We first create a function `bool init();` to initialize our SDL.
 ```bash
 # SDL_Init() is used to initialize SDL, so we can start using it.
@@ -23,13 +23,17 @@ g++ ../main.cpp -o app.exe $(pkg-config --cflags --libs sdl3)
 ./app.exe
 ```
 
-## Step 3: Add a Renderer:
+### Step 3: Add a Renderer:
 - Using SDL_Image, we created LTexture(Lazy Texture) class to wrap SDL_Texture class.
 - We modified our `init()`, `loadMedia()`, `close()` to make use of our LTexture class
 - we added two new global constants `gRenderer` and `gPngTexture`, a Renderer and our LTexture wrapper class.
-- In the function `bool init();` we now create a renderer with the window.
-- This function `bool loadMedia();` loads images using our LTexture wrapper class.
-- This function `void close();` cleans up the resourse used to load the window and renderer and destroys our texture.
+
+> In the function `bool init();` we now create a renderer with the window.
+
+> This function `bool loadMedia();` loads images using our LTexture wrapper class.
+
+> This function `void close();` cleans up the resourse used to load the window and renderer and destroys our texture.
+
 ```bash
 bool init()
 {
@@ -92,4 +96,27 @@ void close()
     # Quit SDL subsystems
     SDL_Quit();
 }
+```
+
+### Step 4: Modularize Structure
+I modularized my code here and split the code into two folders:
+- `include/`: this stores all the header files for my project.
+- `engine`: this stores the .cpp files that define our headers.
+- `assets/`: this stores our project assets.
+
+Those two folders follow this architecture.
+All files in:
+- `core/`: it represents core code like my app struct, our global variables, and my config structs.
+- `physics/`: it implements physics concept like forces.
+- `particles/`: it stores our particle struct.
+- `rendering/`: it's for rendering.
+
+To Build:
+```bash
+cd build/
+cmake .. -G Ninja
+cmake --build .
+
+# Run in project directory:
+./build/particle_sim.exe
 ```
