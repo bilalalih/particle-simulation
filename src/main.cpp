@@ -42,36 +42,55 @@ int main(int argc, char* argv[])
             // The main loop
             while (quit == false)
             {
+                // State update: dt = 0.001
+                std::vector<Particle> particles;
+
+                Uint64 current = SDL_GetTicks();
+                    
+                float velocity = 60;
+                float dt = (current - previous) / 1000.0f;
+                    
+                int height = application.getScreenHeight();
+                float gravity = 500;
+
                 // Get event data
                 while (SDL_PollEvent( &e ) == true)
-                {
-                    // if event is quit type
-                    if (e.type == SDL_EVENT_QUIT)
+                {                    
+                    if ( e.type == SDL_EVENT_MOUSE_BUTTON_DOWN)
+                    {
+                        float mx = e.button.x; 
+                        float my = e.button.y;
+                        
+                        Particle newParticle(0, 0, 0, 0);
+                        newParticle.position.at(0) = mx;
+                        newParticle.position.at(1) = my;
+                        newParticle.velocity.at(0) = 0;
+                        newParticle.velocity.at(0) = 0;
+                        application.render_circle_with_dark_bckgrd(whiteColor, newParticle);
+                        particles.push_back( newParticle);
+                    } else if (e.type == SDL_EVENT_QUIT)
                     {
                         // End the main loop
                         quit = true;
                     }
                 }
-
-                // State update: dt = 0.001
-                Uint64 current = SDL_GetTicks();
-                float velocity = 60;
-                float dt = (current - previous) / 1000.0f;
-                int width = application.getScreenWidth();
-                if (p.getX() > ( width - 20 )) // bounce
+                for ( auto& p : particles)
                 {
-                    p.position.at(0) = (width - 20);
-                    p.velocity.at(0) *= -0.8f;
+                    if (p.getY() > ( height - 20 ) || p.getY() < 0 ) // bounce
+                    {
+                        p.position.at(1) = (height - 20);
+                        p.velocity.at(1) *= -0.8f;
+                    }
+                    
+                    p.velocity.at(1) += gravity * dt;
+                    p.position.at(1) += p.velocity.at(1) * dt;
+                    
+                    // Render
+                    application.render_circle_with_dark_bckgrd(whiteColor, p);
                 }
-                p.position.at(0) += p.velocity.at(0) * dt;
                 previous = current;
-
-                // Render
-                application.render_circle_with_dark_bckgrd(whiteColor, p);
-
+            }
         }
-    }
-
     // Clean up
     application.close();
 
