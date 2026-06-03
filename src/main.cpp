@@ -79,6 +79,13 @@ int main(int argc, char* argv[])
                 {
                     for (auto& p : particles)
                     {
+                        if (p.position.at(1) > height)
+                        {
+                            p.position.at(1) = height;
+
+                            p.velocity.at(1) *= -0.8f;
+                        }
+
                         p.velocity.at(1) += gravity * dt;
 
                         p.position.at(0) += p.velocity.at(0) * dt;
