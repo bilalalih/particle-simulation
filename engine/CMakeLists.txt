@@ -1,7 +1,9 @@
 add_library(engine STATIC
-    rendering/LTexture.cpp
+    rendering/Texture.cpp
     core/Utils.cpp
     core/Globals.cpp
+    rendering/DrawUtils.cpp
+    particles/Particle.cpp
 )
 
 target_include_directories(

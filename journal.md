@@ -24,9 +24,9 @@ g++ ../main.cpp -o app.exe $(pkg-config --cflags --libs sdl3)
 ```
 
 ### Step 3: Add a Renderer:
-- Using SDL_Image, we created LTexture(Lazy Texture) class to wrap SDL_Texture class.
-- We modified our `init()`, `loadMedia()`, `close()` to make use of our LTexture class
-- we added two new global constants `gRenderer` and `gPngTexture`, a Renderer and our LTexture wrapper class.
+- Using SDL_Image, we created Texture class to wrap SDL_Texture class.
+- We modified our `init()`, `loadMedia()`, `close()` to make use of our Texture class
+- we added two new global constants `gRenderer` and `gPngTexture`, a Renderer and our Texture wrapper class.
 
 > In the function `bool init();` we now create a renderer with the window.
 
@@ -120,3 +120,9 @@ cmake --build .
 # Run in project directory:
 ./build/particle_sim.exe
 ```
+
+### Step 5: Draw a Circle
+- I created a `Particle` struct with only one attribute, position.
+- The `Particle` was rendered on my screen as a circle by the `rendering::drawCircle()` function which takes four arguments `renderer`, `center_x`, `center_y`, `radius`.
+- renderer is our SDL_Renderer, center x is the x_co-ord of our particle, center_y is the y_co-ord of our particle, radius is the radius of the circle we'll render on screen.
+- I did some refactoring and changed `render()` into two different functions `render_img()`, and `render_circle_with_dark_bckgrd()`. render img accepts a paramerter called color, the parameter colors the background as our function renders an image on screen. the other function uses a darkbackground and then draws a circle.

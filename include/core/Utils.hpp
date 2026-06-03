@@ -1,16 +1,18 @@
 #ifndef UTILS_HPP
 #define UTILS_HPP
 
+#include <vector>
 #include <SDL3/SDL.h>
 #include "rendering/Texture.hpp"
+#include "particles/Particle.hpp"
 #include "core/Config.hpp"
 
 namespace core
 {
-    struct app
+    struct App
     {        
     public:
-        app(WindowAndRenderer windowAndRenderer_)
+        App(WindowAndRenderer windowAndRenderer_)
         :
             windowAndRenderer(windowAndRenderer_)
         {
@@ -25,7 +27,8 @@ namespace core
         // Frees Media and shutdowns SDL
         void close();
 
-        void render();
+        void render_circle_with_dark_bckgrd(Color& color, Particle& particle, int radius = 100);
+        void render_img(Color& color);
 
         int getScreenWidth() const;
 
@@ -34,6 +37,8 @@ namespace core
         SDL_Renderer* getRenderer() const;
         
         SDL_Window* getWindow() const;
+
+        void setDrawColor(Color& color);
     private:
         // The window and renderer
         WindowAndRenderer windowAndRenderer;

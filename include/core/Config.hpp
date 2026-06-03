@@ -14,8 +14,16 @@ namespace core
 
     struct ScreenCfg
     {
-        int screenWidth{ 640 };
-        int screenHeight{ 800 };
+        int screenWidth{ 1280 };
+        int screenHeight{ 720 };
+    };
+
+    struct Color
+    {
+        Uint8 r{ 255 };
+        Uint8 g{ 255 };
+        Uint8 b{ 255 };
+        Uint8 a{ 255 };
     };
 }
 #endif // !CONFIG_HPP

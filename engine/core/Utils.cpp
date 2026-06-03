@@ -1,8 +1,9 @@
 #include "core/Utils.hpp"
+#include "rendering/DrawUtils.hpp"
 
 namespace core
 {
-    bool app::init(const ScreenCfg& screenCfg_)
+    bool App::init(const ScreenCfg& screenCfg_)
     {
         // Initialization Flag
         bool success{ true };
@@ -15,7 +16,7 @@ namespace core
         {
             // Create Window with Renderer
             if (SDL_CreateWindowAndRenderer(
-                "Particle SImulation: Texture And Extension Libraries", 
+                "Particle Simulation: Texture And Extension Libraries", 
                 screenCfg_.screenWidth, 
                 screenCfg_.screenHeight,
                 0,
@@ -35,7 +36,7 @@ namespace core
         return success;
     }
 
-    bool app::loadMedia(const std::string& path)
+    bool App::loadMedia(const std::string& path)
     {
         // File loading flag
         bool success{ true };
@@ -50,7 +51,7 @@ namespace core
         return success;
     }
 
-    void app::close()
+    void App::close()
     {
 
         // Clean up Texture
@@ -66,15 +67,35 @@ namespace core
         SDL_Quit();
     }
 
-    void app::render()
+    void App::render_circle_with_dark_bckgrd(Color& color, Particle& particle, int radius)
+    {
+        if (pngTexture.isLoaded() == true)
+        {
+            SDL_Log("There is aTexture To Render!\n");
+            return;
+        }
+        // Fill the background black
+        Color darkBckgrd{ 20, 20, 30, 255 };
+        setDrawColor(darkBckgrd);
+        SDL_RenderClear(windowAndRenderer.renderer);
+
+        // circle
+        setDrawColor(color);
+        rendering::drawCircle(windowAndRenderer.renderer, particle.getX(), particle.getY(), radius);
+
+        // Update screen
+        SDL_RenderPresent(windowAndRenderer.renderer);
+    }
+
+    void App::render_img(Color& color)
     {
         if (pngTexture.isLoaded() == false)
         {
             SDL_Log("No Texture To Render!\n");
             return;
         }
-        // Fill the background white
-        SDL_SetRenderDrawColor(windowAndRenderer.renderer, 0xFF, 0xFF, 0xFF, 0xFF);
+        // Fill the background 
+        setDrawColor(color);
         SDL_RenderClear(windowAndRenderer.renderer);
 
         // Render image on screen
@@ -84,23 +105,28 @@ namespace core
         SDL_RenderPresent(windowAndRenderer.renderer);
     }
 
-    int app::getScreenWidth() const 
+    int App::getScreenWidth() const 
     { 
         return screenCfg.screenWidth;
     }
 
-    int app::getScreenHeight() const 
+    int App::getScreenHeight() const 
     { 
         return screenCfg.screenHeight; 
     }
 
-    SDL_Renderer* app::getRenderer() const
+    SDL_Renderer* App::getRenderer() const
     {
         return windowAndRenderer.renderer;
     }
 
-    SDL_Window* app::getWindow() const
+    SDL_Window* App::getWindow() const
     {
         return windowAndRenderer.window;
+    }
+
+    void App::setDrawColor(Color& color)
+    {
+        SDL_SetRenderDrawColor(windowAndRenderer.renderer, color.r, color.g, color.b, color.a);
     }
 }
