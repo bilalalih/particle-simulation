@@ -6,11 +6,13 @@
 struct Particle
 {
     Vec2f position;
-    float radius;
+    Vec2f velocity;
+    float radius = 100;
 
-    Particle(float x, float y);
+    Particle(float x, float y, float vx, float vy);
 
     int getX() const;
     int getY() const;
+    int getRadius() const;
 };
 #endif // !PARTICLE_HPP

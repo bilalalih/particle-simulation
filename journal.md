@@ -128,3 +128,4 @@ cmake --build .
 - I did some refactoring and changed `render()` into two different functions `render_img()`, and `render_circle_with_dark_bckgrd()`. render img accepts a paramerter called color, the parameter colors the background as our function renders an image on screen. the other function uses a darkbackground and then draws a circle.
 - I built a render function for rectangles this time, `render_rectangle_with_dark_background()`
 - the main now renders just a rectangle with the color you set in a dark bakground.
+- I added a bounce feature but only for the right side of the x-axis(the positive side)

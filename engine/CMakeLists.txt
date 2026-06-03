@@ -1,7 +1,6 @@
 add_library(engine STATIC
     rendering/Texture.cpp
-    core/Utils.cpp
-    core/Globals.cpp
+    core/App.cpp
     rendering/DrawUtils.cpp
     particles/Particle.cpp
 )

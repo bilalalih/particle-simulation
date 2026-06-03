@@ -67,7 +67,7 @@ namespace core
         SDL_Quit();
     }
 
-    void App::render_circle_with_dark_bckgrd(Color& color, Particle& particle, int radius)
+    void App::render_circle_with_dark_bckgrd(Color& color, Particle& particle)
     {
         if (pngTexture.isLoaded() == true)
         {
@@ -81,7 +81,7 @@ namespace core
 
         // circle
         setDrawColor(color);
-        rendering::drawCircle(windowAndRenderer.renderer, particle.getX(), particle.getY(), radius);
+        rendering::drawCircle(windowAndRenderer.renderer, particle.getX(), particle.getY(), particle.getRadius());
 
         // Update screen
         SDL_RenderPresent(windowAndRenderer.renderer);
