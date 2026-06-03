@@ -121,8 +121,10 @@ cmake --build .
 ./build/particle_sim.exe
 ```
 
-### Step 5: Draw a Circle
+### Step 5: Draw a Circle? Render Shapes.
 - I created a `Particle` struct with only one attribute, position.
 - The `Particle` was rendered on my screen as a circle by the `rendering::drawCircle()` function which takes four arguments `renderer`, `center_x`, `center_y`, `radius`.
 - renderer is our SDL_Renderer, center x is the x_co-ord of our particle, center_y is the y_co-ord of our particle, radius is the radius of the circle we'll render on screen.
 - I did some refactoring and changed `render()` into two different functions `render_img()`, and `render_circle_with_dark_bckgrd()`. render img accepts a paramerter called color, the parameter colors the background as our function renders an image on screen. the other function uses a darkbackground and then draws a circle.
+- I built a render function for rectangles this time, `render_rectangle_with_dark_background()`
+- the main now renders just a rectangle with the color you set in a dark bakground.

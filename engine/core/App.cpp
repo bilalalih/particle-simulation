@@ -1,4 +1,4 @@
-#include "core/Utils.hpp"
+#include "core/App.hpp"
 #include "rendering/DrawUtils.hpp"
 
 namespace core
@@ -100,6 +100,36 @@ namespace core
 
         // Render image on screen
         pngTexture.render(windowAndRenderer.renderer, 0.f, 0.f);
+
+        // Update screen
+        SDL_RenderPresent(windowAndRenderer.renderer);
+    }
+    
+    void App::render_rectangle_with_dark_background(Color& color)
+    {
+        if (pngTexture.isLoaded() == true)
+        {
+            SDL_Log("There is aTexture To Render!\n");
+            return;
+        }
+        // Fill the background black
+        Color darkBckgrd{ 0, 0, 0, 255 };
+        setDrawColor(darkBckgrd);
+        SDL_RenderClear(windowAndRenderer.renderer);
+
+        // circle
+        setDrawColor(color);
+        SDL_FRect box{
+            600,
+            300,
+            100,
+            100
+        };
+
+        SDL_RenderFillRect(
+            windowAndRenderer.renderer,
+            &box
+        );
 
         // Update screen
         SDL_RenderPresent(windowAndRenderer.renderer);

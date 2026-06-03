@@ -1,5 +1,5 @@
-#ifndef UTILS_HPP
-#define UTILS_HPP
+#ifndef APP_HPP
+#define APP_HPP
 
 #include <vector>
 #include <SDL3/SDL.h>
@@ -27,8 +27,10 @@ namespace core
         // Frees Media and shutdowns SDL
         void close();
 
+        // Render functions.
         void render_circle_with_dark_bckgrd(Color& color, Particle& particle, int radius = 100);
         void render_img(Color& color);
+        void render_rectangle_with_dark_background(Color& color);
 
         int getScreenWidth() const;
 

@@ -30,7 +30,7 @@ int main(int argc, char* argv[])
             SDL_zero(e);
 
             // Create a particle
-            Particle particle(application.getScreenWidth()/2, application.getScreenHeight()/2);
+            Particle p(application.getScreenWidth()/2, application.getScreenHeight()/2);
             // Create a draw object
             core::Color whiteColor{ 255, 255, 255, 255 }; // White color
         
@@ -49,7 +49,7 @@ int main(int argc, char* argv[])
                 }
 
                 // Render
-                application.render_circle_with_dark_bckgrd(whiteColor, particle);
+                application.render_rectangle_with_dark_background(whiteColor);
         }
     }
 
