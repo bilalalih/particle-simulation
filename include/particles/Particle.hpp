@@ -3,16 +3,23 @@
 
 #include "math/Vec.hpp"
 
-struct Particle
+class Particle
 {
+private:
     Vec2f position;
     Vec2f velocity;
-    float radius = 100;
+    float radius = 4;
+    float life;
 
+public:
     Particle(float x, float y, float vx, float vy);
-
+    Particle(float x, float y, float vx, float vy, float radius);
     int getX() const;
     int getY() const;
+    float getLife() const;
+    void initRandomParticle(float mx, float my);
+    void initRandP();
+    void update(const float g, const int h, const float dt);
     int getRadius() const;
 };
 #endif // !PARTICLE_HPP
