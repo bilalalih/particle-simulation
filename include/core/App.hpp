@@ -24,8 +24,8 @@ namespace core
 
         // Loads media
         bool loadMedia(const std::string& path);
-        bool loadBgAndFooMedia();
-
+        bool loadPng(const std::string& path);
+    
         // Frees Media and shutdowns SDL
         void close();
 
@@ -48,8 +48,7 @@ namespace core
         
         SDL_Window* getWindow() const;
 
-        rendering::Texture& getFooTexture();
-        rendering::Texture& getBgTexture();
+        rendering::Texture& getSpriteSheetTexture();
 
         void setDrawColor(Color& color);
     private:
@@ -61,7 +60,7 @@ namespace core
         ScreenCfg screenCfg;
         
         // The directional images
-        rendering::Texture bgTexture, fooTexture;
+        rendering::Texture spriteSheetTexture;
     };
 }
 

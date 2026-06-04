@@ -28,7 +28,7 @@ int main(int argc, char* argv[])
     else
     {
         // Load Media
-        if (application.loadBgAndFooMedia() == false)
+        if (application.loadMedia("assets/dots.png") == false)
         {
             SDL_Log("Unable To Load Media!\n");
             exitCode = 2;
@@ -42,12 +42,13 @@ int main(int argc, char* argv[])
             SDL_Event e;
             SDL_zero(e);
 
-            // The background and charcter image
-            rendering::Texture* bgTexture = &application.getBgTexture();
-            rendering::Texture* fooTexture = &application.getFooTexture();
+            // Sprite image
+            rendering::Texture* spriteSheetTexture = &application.getSpriteSheetTexture();
 
             //Background color defaults to white
             core::Color whiteColor{ 0xFF, 0xFF, 0xFF, 0xFF };
+            const float width = application.getScreenWidth();
+            const float height = application.getScreenHeight();
 
             // The main loop
             while (quit == false)
@@ -64,22 +65,60 @@ int main(int argc, char* argv[])
                     }
                 }
 
-                // Fill the background
+                // Fill the background white
                 application.beginFrame(whiteColor);
 
-                // Render background image on screen
-                bgTexture->render(
-                    application.getRenderer(), 
-                    0.f,
-                    0.f 
-                ); 
-                
-                fooTexture->render(
-                    application.getRenderer(), 
-                    240.f,
-                    190.f 
-                ); 
+                // Init sprite clip
+                constexpr float kSpriteSize = 100.f;
+                SDL_FRect spriteClip{0.f, 0.f, kSpriteSize, kSpriteSize};
 
+                // Init sprite size
+                SDL_FRect spriteSize{0.f, 0.f, kSpriteSize, kSpriteSize};
+
+                // Use top left sprite
+                spriteClip.x = 0.f;
+                spriteClip.y = 0.f;
+
+                // Set sprite size to original size
+                spriteSize.w = kSpriteSize;
+                spriteSize.h = kSpriteSize;
+
+                // Draw original sized sprite
+                spriteSheetTexture->render_rect(0.f, 0.f, &spriteClip, spriteSize.w, spriteSize.h, application.getRenderer());
+
+                // Use top right sprite
+                spriteClip.x = kSpriteSize;
+                spriteClip.y =        0.f;
+
+                // Set sprite to half size
+                spriteSize.w = kSpriteSize * 0.5f;
+                spriteSize.h = kSpriteSize * 0.5f;
+
+                // Draw half size sprite
+                spriteSheetTexture->render_rect(width - spriteSize.w, 0.f, &spriteClip, spriteSize.w, spriteSize.h, application.getRenderer());
+
+                // Use bottom left sprite
+                spriteClip.x = 0.f;
+                spriteClip.y = kSpriteSize;
+
+                // Set sprite to double size
+                spriteSize.w = kSpriteSize * 2.f;
+                spriteSize.h = kSpriteSize * 2.f;
+
+                // Draw double size sprite
+                spriteSheetTexture->render_rect(0.f, height - spriteSize.h, &spriteClip, spriteSize.w, spriteSize.h, application.getRenderer());
+
+                // Use bottom right sprite
+                spriteClip.x = kSpriteSize;
+                spriteClip.y = kSpriteSize;
+
+                // Squish the sprite vertically
+                spriteSize.w = kSpriteSize;
+                spriteSize.h = kSpriteSize * 0.5f;
+
+                // Draw double size sprite
+                spriteSheetTexture->render_rect(width - spriteSize.w, height - spriteSize.h, &spriteClip, spriteSize.w, spriteSize.h, application.getRenderer());
+                
                 application.endFrame();
             } 
         }

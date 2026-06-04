@@ -79,6 +79,37 @@ namespace rendering
         SDL_RenderTexture(renderer, mTexture, nullptr, &dstRect);
     }
 
+    
+    void Texture::render_rect(
+        float x, float y,
+        SDL_FRect* clip,
+        float width, float height,
+        SDL_Renderer* renderer)
+    {
+        // Set texture position
+        SDL_FRect dstRect{x, y, static_cast<float>(mWidth), static_cast<float>(mHeight)};
+
+        // Default to clip dimensions if clip is given
+        if (clip != nullptr)
+        {
+            dstRect.w = clip->w;
+            dstRect.h = clip->h;
+        }
+        
+        // Resize if new dimensions are given
+        if (width > 0)
+        {
+            dstRect.w = width;
+        }
+        if (height > 0)
+        {
+            dstRect.h = height;
+        }
+
+        // Render Texture
+        SDL_RenderTexture(renderer, mTexture, clip, &dstRect);
+    }
+
     int Texture::getWidth() const
     {
         return mWidth;

@@ -9,6 +9,9 @@ namespace rendering
     class Texture
     {
     public:
+        // Symbolic constant
+        static constexpr float kOriginalSize = -1.f;
+
         // Initializes texture variables
         Texture();
 
@@ -35,6 +38,12 @@ namespace rendering
 
         // Draws texture
         void render(SDL_Renderer* renderer, float x, float y);
+        void render_rect(
+            float x, float y,
+            SDL_FRect* clip,
+            float width, float height,
+            SDL_Renderer* renderer
+        );
 
         // Gets texture attributes
         int getWidth() const;

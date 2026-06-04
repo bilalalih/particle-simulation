@@ -44,6 +44,21 @@ namespace core
         bool success{ true };
 
         // Load splash image
+        if (spriteSheetTexture.loadFromFile(path, windowAndRenderer.renderer) == false)
+        {
+            SDL_Log("Unable To Load PNG Image!\n");
+            success = false;
+        }
+
+        return success;
+    }
+
+    bool App::loadPng(const std::string& path)
+    {
+        // File loading flag
+        bool success{ true };
+
+        // Load splash image
         if (pngTexture.loadFromFile(path, windowAndRenderer.renderer) == false)
         {
             SDL_Log("Unable To Load PNG Image!\n");
@@ -52,35 +67,14 @@ namespace core
 
         return success;
     }
+
     
-    bool App::loadBgAndFooMedia()
-    {
-        // File loading flag
-        bool success{true};
-
-        if (fooTexture.loadFromFile("./assets/foo.png", windowAndRenderer.renderer) == false)
-        {
-            SDL_Log("Unable to Load Foo Image!\n");
-            success = false;
-        }
-        
-        if (bgTexture.loadFromFile("./assets/background.png", windowAndRenderer.renderer) == false)
-        {
-            SDL_Log("Unable to Load Background Image!\n");
-            success = false;
-        }
-
-        return success;
-    }
-
-
     void App::close()
     {
 
         // Clean up Texture
         pngTexture.destroy();
-        bgTexture.destroy();
-        fooTexture.destroy();
+        spriteSheetTexture.destroy();
 
         // Destroy Window
         SDL_DestroyRenderer( windowAndRenderer.renderer );
@@ -202,14 +196,9 @@ namespace core
         return windowAndRenderer.window;
     }
 
-    rendering::Texture& App::getFooTexture()
+    rendering::Texture& App::getSpriteSheetTexture()
     {
-        return fooTexture;
-    }
-
-    rendering::Texture& App::getBgTexture()
-    {
-        return bgTexture;
+        return spriteSheetTexture;
     }
 
     void App::setDrawColor(Color& color)
