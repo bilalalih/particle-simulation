@@ -53,36 +53,20 @@ namespace core
         return success;
     }
     
-    bool App::loadFourMediaTextures(
-        const std::string& path_up,
-        const std::string& path_down,
-        const std::string& path_left,
-        const std::string& path_right
-    )
+    bool App::loadBgAndFooMedia()
     {
+        // File loading flag
         bool success{true};
 
-        if (upTexture.loadFromFile(path_up, windowAndRenderer.renderer) == false)
+        if (fooTexture.loadFromFile("./assets/foo.png", windowAndRenderer.renderer) == false)
         {
-            SDL_Log("Unable to load up image!\n");
+            SDL_Log("Unable to Load Foo Image!\n");
             success = false;
         }
         
-        if (downTexture.loadFromFile(path_down, windowAndRenderer.renderer) == false)
+        if (bgTexture.loadFromFile("./assets/background.png", windowAndRenderer.renderer) == false)
         {
-            SDL_Log("Unable to load down image!\n");
-            success = false;
-        }
-        
-        if (leftTexture.loadFromFile(path_left, windowAndRenderer.renderer) == false)
-        {
-            SDL_Log("Unable to load left image!\n");
-            success = false;
-        }
-
-        if (rightTexture.loadFromFile(path_right, windowAndRenderer.renderer) == false)
-        {
-            SDL_Log("Unable to load right image!\n");
+            SDL_Log("Unable to Load Background Image!\n");
             success = false;
         }
 
@@ -95,10 +79,8 @@ namespace core
 
         // Clean up Texture
         pngTexture.destroy();
-        upTexture.destroy();
-        downTexture.destroy();
-        leftTexture.destroy();
-        rightTexture.destroy();
+        bgTexture.destroy();
+        fooTexture.destroy();
 
         // Destroy Window
         SDL_DestroyRenderer( windowAndRenderer.renderer );
@@ -220,24 +202,14 @@ namespace core
         return windowAndRenderer.window;
     }
 
-    rendering::Texture& App::getUpTexture()
+    rendering::Texture& App::getFooTexture()
     {
-        return upTexture;
+        return fooTexture;
     }
 
-    rendering::Texture& App::getDownTexture()
+    rendering::Texture& App::getBgTexture()
     {
-        return downTexture;
-    }
-
-    rendering::Texture& App::getLeftTexture()
-    {
-        return leftTexture;
-    }
-
-    rendering::Texture& App::getRightTexture()
-    {
-        return rightTexture;
+        return bgTexture;
     }
 
     void App::setDrawColor(Color& color)

@@ -134,3 +134,5 @@ cmake --build .
 - This whole commit is about handling a keyboard event in our app.
 - I added some more funtcions, made our app to store and possess multiple textures(UP, DOWN, LEFT, RIGHT), one of the new functions is `loadFourMediaTextures()`
 - The `main` handles a keyboard event and allows us to change texture based on the key we pressed.
+
+> I learned color keying and used it to set a surface color key for my `foo.png`

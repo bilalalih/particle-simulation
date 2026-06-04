@@ -24,12 +24,7 @@ namespace core
 
         // Loads media
         bool loadMedia(const std::string& path);
-        bool loadFourMediaTextures(
-        const std::string& path_up = "./assets/up.png",
-        const std::string& path_down = "./assets/down.png",
-        const std::string& path_left = "./assets/left.png",
-        const std::string& path_right = "./assets/right.png"
-        );
+        bool loadBgAndFooMedia();
 
         // Frees Media and shutdowns SDL
         void close();
@@ -53,10 +48,8 @@ namespace core
         
         SDL_Window* getWindow() const;
 
-        rendering::Texture& getUpTexture();
-        rendering::Texture& getDownTexture();
-        rendering::Texture& getLeftTexture();
-        rendering::Texture& getRightTexture();
+        rendering::Texture& getFooTexture();
+        rendering::Texture& getBgTexture();
 
         void setDrawColor(Color& color);
     private:
@@ -68,7 +61,7 @@ namespace core
         ScreenCfg screenCfg;
         
         // The directional images
-        rendering::Texture upTexture, downTexture, leftTexture, rightTexture;
+        rendering::Texture bgTexture, fooTexture;
     };
 }
 

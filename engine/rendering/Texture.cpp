@@ -25,19 +25,17 @@ namespace rendering
         destroy();
 
         // Load surface
-        if (SDL_Surface* LoadedSurface = IMG_Load( path.c_str() ); LoadedSurface == nullptr)
+        if (SDL_Surface* loadedSurface = IMG_Load( path.c_str() ); loadedSurface == nullptr)
         {
-            SDL_Log("Unable To Load Image %s! SDL error: %s/n", path.c_str(), SDL_GetError());
+            SDL_Log("Unable To Load Image %s! SDL error: %s\n", path.c_str(), SDL_GetError());
             return false;
         }
         else
         {
-            // Create texture from surface
-            
-            SDL_Surface* loadedSurface{ SDL_LoadPNG( path.c_str()) };
-            if (loadedSurface == nullptr)
+            // Color key image
+            if (SDL_SetSurfaceColorKey(loadedSurface, true, SDL_MapSurfaceRGB(loadedSurface, 0X00, 0XFF, 0XFF)) == false)
             {
-                SDL_Log("Unable To Load Image %s! SDL error: %s/n ", path.c_str(), SDL_GetError());
+                SDL_Log("Unable To Color Key! SDL Error: %s", SDL_GetError());
             } else
             {
                 // Create texture from surface pixels
