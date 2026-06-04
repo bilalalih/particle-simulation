@@ -3,36 +3,38 @@
 
 namespace core
 {
-    bool App::init(const ScreenCfg& screenCfg_)
+    bool App::init()
     {
         // Initialization Flag
         bool success{ true };
         
         if (SDL_Init(SDL_INIT_VIDEO) == false)
         {
-            SDL_Log("SDL could not initialize! SDL Error: %s/n", SDL_GetError());
+            SDL_Log("SDL could not initialize! SDL Error: %s\n", SDL_GetError());
             success = false;
-        } else 
+        }
+        else
         {
             // Create Window with Renderer
             if (SDL_CreateWindowAndRenderer(
-                "Particle Simulation: Texture And Extension Libraries", 
-                screenCfg_.screenWidth, 
-                screenCfg_.screenHeight,
+                "Particle Simulator", 
+                screenCfg.screenWidth, 
+                screenCfg.screenHeight,
                 0,
                 &windowAndRenderer.window,
                 &windowAndRenderer.renderer
                 ) == false
             ){
-                SDL_Log("Window Could Not Be Created! SDL Error: %s/n", SDL_GetError());
+                SDL_Log("Window could not be created! SDL Error: %s\n", SDL_GetError());
                 success = false;
             }
-            // set screen configuration
-            screenCfg.screenHeight = screenCfg_.screenHeight;
-            screenCfg.screenWidth = screenCfg_.screenWidth;
         }
 
-        SDL_Log("SDL Initialized Succesfully");
+        if (success)
+        {
+            SDL_Log("SDL initialized successfully\n");
+        }
+
         return success;
     }
 
@@ -50,12 +52,53 @@ namespace core
 
         return success;
     }
+    
+    bool App::loadFourMediaTextures(
+        const std::string& path_up,
+        const std::string& path_down,
+        const std::string& path_left,
+        const std::string& path_right
+    )
+    {
+        bool success{true};
+
+        if (upTexture.loadFromFile(path_up, windowAndRenderer.renderer) == false)
+        {
+            SDL_Log("Unable to load up image!\n");
+            success = false;
+        }
+        
+        if (downTexture.loadFromFile(path_down, windowAndRenderer.renderer) == false)
+        {
+            SDL_Log("Unable to load down image!\n");
+            success = false;
+        }
+        
+        if (leftTexture.loadFromFile(path_left, windowAndRenderer.renderer) == false)
+        {
+            SDL_Log("Unable to load left image!\n");
+            success = false;
+        }
+
+        if (rightTexture.loadFromFile(path_right, windowAndRenderer.renderer) == false)
+        {
+            SDL_Log("Unable to load right image!\n");
+            success = false;
+        }
+
+        return success;
+    }
+
 
     void App::close()
     {
 
         // Clean up Texture
         pngTexture.destroy();
+        upTexture.destroy();
+        downTexture.destroy();
+        leftTexture.destroy();
+        rightTexture.destroy();
 
         // Destroy Window
         SDL_DestroyRenderer( windowAndRenderer.renderer );
@@ -72,6 +115,16 @@ namespace core
         Color bg{20,20,30,255};
 
         setDrawColor(bg);
+
+        SDL_RenderClear(
+            windowAndRenderer.renderer
+        );
+    }
+
+    
+    void App::beginFrame(Color& c)
+    {
+        setDrawColor(c);
 
         SDL_RenderClear(
             windowAndRenderer.renderer
@@ -165,6 +218,26 @@ namespace core
     SDL_Window* App::getWindow() const
     {
         return windowAndRenderer.window;
+    }
+
+    rendering::Texture& App::getUpTexture()
+    {
+        return upTexture;
+    }
+
+    rendering::Texture& App::getDownTexture()
+    {
+        return downTexture;
+    }
+
+    rendering::Texture& App::getLeftTexture()
+    {
+        return leftTexture;
+    }
+
+    rendering::Texture& App::getRightTexture()
+    {
+        return rightTexture;
     }
 
     void App::setDrawColor(Color& color)

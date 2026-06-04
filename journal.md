@@ -129,3 +129,8 @@ cmake --build .
 - I built a render function for rectangles this time, `render_rectangle_with_dark_background()`
 - the main now renders just a rectangle with the color you set in a dark bakground.
 - I added a bounce feature but only for the right side of the x-axis(the positive side)
+
+### Step 6: Event Handling
+- This whole commit is about handling a keyboard event in our app.
+- I added some more funtcions, made our app to store and possess multiple textures(UP, DOWN, LEFT, RIGHT), one of the new functions is `loadFourMediaTextures()`
+- The `main` handles a keyboard event and allows us to change texture based on the key we pressed.

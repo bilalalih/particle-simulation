@@ -3,6 +3,7 @@
 #include "core/App.hpp"
 #include "core/Config.hpp"
 #include "particles/Particle.hpp"
+#include "rendering/Texture.hpp"
 #include <SDL3/SDL_main.h>
 
 
@@ -16,87 +17,122 @@ int main(int argc, char* argv[])
     core::ScreenCfg cfg;
 
     // Create application instance
-    core::App application(wdrd);
+    core::App application(wdrd, cfg);
     
     // Initialize:
-    if (application.init(cfg) == false)
+    if (application.init() == false)
     {
         SDL_Log("Unable To Initialize Program!\n");
         exitCode = 1;
     }
     else
     {
+        // Load Media
+        if (application.loadFourMediaTextures() == false)
+        {
+            SDL_Log("Unable To Load Media!\n");
+            exitCode = 2;
+        } 
+        else
+        {
             // The quit flag
             bool quit{ false };
 
             // The event data
-            SDL_Event(e);
+            SDL_Event e;
             SDL_zero(e);
 
-            // Create an empty particle space
-            std::vector<Particle> particles;
+            // The currently rendered texture
+            rendering::Texture* currentTexture = &application.getUpTexture();
 
-            // color object
-            core::Color whiteColor{ 255, 255, 255, 255 }; // White color
-            
-            Uint64 previous = SDL_GetTicks();
+            //Background color defaults to white
+            core::Color bgColor{ 0xFF, 0xFF, 0xFF, 0xFF };
 
-            int height = application.getScreenHeight();
-            float gravity = 500;
-        
             // The main loop
             while (quit == false)
             {
-
-                Uint64 current = SDL_GetTicks();    
-                float dt = (current - previous) / 1000.0f;
-                previous = current;
-
                 // Get event data
-                while (SDL_PollEvent( &e ) == true)
-                {                    
-                    if ( e.type == SDL_EVENT_MOUSE_BUTTON_DOWN)
-                    {
-                        float mx = e.button.x; 
-                        float my = e.button.y;
-                        
-                        Particle newParticle(0, 0, 0, 0);
-                        newParticle.position.at(0) = mx;
-                        newParticle.position.at(1) = my;
-                        newParticle.velocity.at(0) = 0;
-                        newParticle.velocity.at(1) = 0;
-                        particles.push_back( newParticle);
-                    } else if (e.type == SDL_EVENT_QUIT)
+                while( SDL_PollEvent(&e) == true )
+                {
+                    // If event is quit type
+                    if (e.type == SDL_EVENT_QUIT)
                     {
                         // End the main loop
                         quit = true;
-                    }
-                }
 
-                application.beginFrame();
-                // update state
-                if (!particles.empty())
-                {
-                    for (auto& p : particles)
+                    } // On keyboard key press
+                    else if(e.type == SDL_EVENT_KEY_DOWN)
                     {
-                        if (p.position.at(1) > height)
+                        // Set Texture
+                        if ( e.key.key == SDLK_UP )
                         {
-                            p.position.at(1) = height;
-
-                            p.velocity.at(1) *= -0.8f;
+                            currentTexture = &application.getUpTexture();
+                        } 
+                        else if ( e.key.key == SDLK_DOWN )
+                        {
+                            currentTexture = &application.getDownTexture();
+                        } 
+                        else if ( e.key.key == SDLK_LEFT )
+                        {
+                            currentTexture = &application.getLeftTexture();
+                        } 
+                        else if ( e.key.key == SDLK_RIGHT )
+                        {
+                            currentTexture = &application.getRightTexture();
                         }
-
-                        p.velocity.at(1) += gravity * dt;
-
-                        p.position.at(0) += p.velocity.at(0) * dt;
-                        p.position.at(1) += p.velocity.at(1) * dt ;
-
-                        application.drawParticle(whiteColor, p);
                     }
                 }
+
+                // Reset background color to white
+                bgColor.r = 0xFF;
+                bgColor.g = 0XFF;
+                bgColor.b = 0XFF;
+
+                // Set backgroundcolor based on key state
+                const bool* keyStates = SDL_GetKeyboardState( nullptr );
+                if (keyStates[ SDL_SCANCODE_UP ] == true)
+                {
+                    // Red
+                    bgColor.r = 0XFF;
+                    bgColor.g = 0X00;
+                    bgColor.b = 0X00;
+                } 
+                else if (keyStates[ SDL_SCANCODE_DOWN ] == true)
+                {
+                    // Green
+                    bgColor.r = 0X00;
+                    bgColor.g = 0XFF;
+                    bgColor.b = 0X00;
+                } 
+                else if (keyStates[ SDL_SCANCODE_LEFT ] == true)
+                {
+                    // Yellow
+                    bgColor.r = 0XFF;
+                    bgColor.g = 0XFF;
+                    bgColor.b = 0X00;
+                } 
+                else if (keyStates[ SDL_SCANCODE_RIGHT ] == true)
+                {
+                    // Blue
+                    bgColor.r = 0X00;
+                    bgColor.g = 0X00;
+                    bgColor.b = 0XFF;
+                }
+
+                // Fill the background
+                application.beginFrame(bgColor);
+
+                // Render image on screen
+                currentTexture->render(
+                    application.getRenderer(), 
+                    (application.getScreenWidth() - currentTexture->getWidth())/2.f,
+                    (application.getScreenHeight() - currentTexture->getHeight())/2.f 
+                ); 
+
                 application.endFrame();
-            }
+            } 
         }
+    }
     // Clean up
     application.close();
 
