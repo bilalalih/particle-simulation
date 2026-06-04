@@ -8,12 +8,12 @@ Particle::Particle(float x, float y, float vx, float vy, float radius_) : positi
 {
 }
 
-int Particle::getX() const 
+float Particle::getX() const 
 { 
     return position.at(0); 
 }
 
-int Particle::getY() const 
+float Particle::getY() const 
 { 
     return position.at(1); 
 }

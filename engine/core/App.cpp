@@ -113,12 +113,7 @@ namespace core
     {
         setDrawColor(color);
 
-        rendering::drawCircle(
-            windowAndRenderer.renderer,
-            particle.getX(),
-            particle.getY(),
-            particle.getRadius()
-        );
+        SDL_RenderPoint( windowAndRenderer.renderer, static_cast<int>(particle.getX()), static_cast<int>(particle.getY()));
     }
 
     void App::endFrame()

@@ -136,3 +136,6 @@ cmake --build .
 - The `main` handles a keyboard event and allows us to change texture based on the key we pressed.
 
 > I learned color keying and used it to set a surface color key for my `foo.png`
+
+I built a particle simulation in the "main.cpp", it listens for a mouse event, and then create a bunch of particles on a mouse click.
+It has a `ParticleRenderer` class that renders particles on the screen.

@@ -14,8 +14,8 @@ private:
 public:
     Particle(float x, float y, float vx, float vy);
     Particle(float x, float y, float vx, float vy, float radius);
-    int getX() const;
-    int getY() const;
+    float getX() const;
+    float getY() const;
     float getLife() const;
     void initRandomParticle(float mx, float my);
     void initRandP();

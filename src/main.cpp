@@ -4,6 +4,7 @@
 #include "core/App.hpp" 
 #include "core/Config.hpp" 
 #include "particles/Particle.hpp" 
+#include "rendering/ParticleRenderer.hpp"
 #include <cstdlib>
 #include <SDL3/SDL_main.h> 
 int main(int argc, char* argv[]) { 
@@ -33,6 +34,9 @@ int main(int argc, char* argv[]) {
         std::vector<Particle> particles; 
         particles.reserve(10000);
         
+        rendering::ParticleRenderer particleRenderer;
+        particleRenderer.init(application.getRenderer(), 8);
+
         // color object 
         core::Color whiteColor{ 255, 255, 255, 255 }; // White color 
         Uint64 previous = SDL_GetTicks();
@@ -98,21 +102,21 @@ int main(int argc, char* argv[]) {
                     c.b = 255 * t;
                     c.a = 255;
                     p.update(gravity, height, dt);
-                    application.drawParticle(c, p);
+
+                    particleRenderer.draw(p, c);
                 }
                 application.endFrame();
 
-                particles.erase(
-                    std::remove_if(
-                        particles.begin(),
-                        particles.end(),
-                        [](auto& p)
-                        {
-                            return p.getLife() <= 0;
-                        }
-                    ),
-                    particles.end()
-                );
+                size_t alive = 0;
+                for (size_t i = 0; i < particles.size(); i++)
+                {
+                    if (particles[i].getLife() > 0)
+                    {
+                        particles[alive++] = particles[i];
+                    }
+                } 
+
+                particles.resize(alive);
             }
             else
             {
@@ -128,6 +132,7 @@ int main(int argc, char* argv[]) {
                 timer = 0;
             }
         } 
+        particleRenderer.destroy();
     } 
 
     // Clean up
