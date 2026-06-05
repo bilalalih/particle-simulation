@@ -27,20 +27,9 @@ namespace particles
         removeDead();
     }
 
-    void ParticleSystem::render(rendering::ParticleRenderer& pRenderer)
+    const std::vector<Particle>& ParticleSystem::getParticles() const
     {
-        for (auto& p : particles)
-        {
-            float t = p.getLife() / 15.0f;
-            
-            core::Color c;
-            c.r = 255;
-            c.g = 255 * t;
-            c.b = 255 * t;
-            c.a = 255;
-
-            pRenderer.draw(p, c);
-        }
+        return particles;
     }
 
     void ParticleSystem::removeDead()

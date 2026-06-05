@@ -54,6 +54,22 @@ namespace rendering
         SDL_RenderTexture(renderer, texture, nullptr, &dst);
     }
 
+    void ParticleRenderer::drawAll(const std::vector<particles::Particle>& particles)
+    {
+        for (auto& p : particles)
+        {
+            float t = p.getLife() / 15.0f;
+            
+            core::Color c;
+            c.r = 255;
+            c.g = 255 * t;
+            c.b = 255 * t;
+            c.a = 255;
+
+            draw(p, c);
+        }
+    }
+
     void ParticleRenderer::destroy()
     {
         if(texture)

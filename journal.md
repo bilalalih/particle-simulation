@@ -29,8 +29,8 @@ g++ ../main.cpp -o app.exe $(pkg-config --cflags --libs sdl3)
 - We added two new global constants `gRenderer` and `gPngTexture`.
 
 **Global Constants:**
-- `gRenderer` is of type `SDL_Renderer`
-- `gPngTexture` is of type `Texture`
+- `gRenderer` is of type `SDL_Renderer`.
+- `gPngTexture` is of type `Texture`.
 
 > `bool init()` was refactored to initialize the `SDL_Renderer` and `SDL_Window` objects.
 
@@ -141,12 +141,12 @@ cmake --build .
 - `render img()` accepts a paramerter called color, the parameter colors the background as our function renders an image on screen. the other function uses a darkbackground and then draws a circle.
 
 - `render_circle_with_dark_bckgrd()` used `drawCircle()`:
-- `drawCircle()` was a naive approach to drawing circles and `render_circle_with_dark_bckgrd()` renders them on a dark background texture;
+- `drawCircle()` was a naive approach to drawing circles and `render_circle_with_dark_bckgrd()` renders them on a dark background texture.
 
 - `render_rectangle_with_dark_background()` renders a rectangle to the screen.
 
 **I added a bouncing feature:**
-- The `Particle` object bounces when it's y-position is greater than the screen height
+- The `Particle` object bounces when it's y-position is greater than the screen height.
 
 **Condition:**
 > `particle.y >= screenHeight`
@@ -163,7 +163,7 @@ cmake --build .
 - To load the `Texture`'s, the `loadFourMediaTextures()` function that takes care of that.
 - The `main` handles a keyboard event and allows us to change texture based on the key we pressed.
 
-> I learned color keying and used it to set a surface color key for my `foo.png`
+> I learned color keying and used it to set a surface color key for my `foo.png`.
 
 ### Step 7: A Particle System
 - I built a particle simulation in the `main.cpp`.
@@ -177,4 +177,27 @@ It has the methods `emit()`, `update()`, and `render()`.
 **The functions:** 
 - `emit()`: It takes three parameters the x-position, y-position, and count of particles you want to emit.
 - `update()`: It's the state-update method, it takes three parameters gravity, floor, and dt and calls the `update()` method of the `Particle` class.
-- `render()`: This method draws every particle in the member variable `particles` and renders them using the `ParticleRenderer::draw()` function as points on the screen. 
+
+**Date: 6th June 2026**
+- I refactored both the `ParticleSystem` and `ParticleRenderer`.
+- Now `ParticleSystem` only deals with:
+
+```bash
+ ── ParticleSystem
+    ├── emit
+    ├── update
+    └── storage
+```
+It no longers renders particles and has nothing to do with rendering anymore.
+`render()` **deleted**.
+
+- Instead, `ParticleRenderer` handles the rendering and drawing.
+```bash
+ ── ParticleRenderer
+      ├── color
+      ├── texture
+      └── drawing
+```
+
+This function takes a vector of particles and draws all of the particles.
+`drawAll()` **created**

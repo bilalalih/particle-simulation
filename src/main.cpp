@@ -77,8 +77,8 @@ int main(int argc, char* argv[]) {
             particleSystem.update(gravity, height, dt);
 
             // Render image
-            particleSystem.render(particleRenderer);
-
+            particleRenderer.drawAll(particleSystem.getParticles());
+            
             // Update the screen using our Frame
             application.endFrame();
 

@@ -2,6 +2,7 @@
 #define PARTICLE_RENDERER_HPP
 
 #include <SDL3/SDL.h>
+#include <vector>
 #include "core/Config.hpp"
 #include "particles/Particle.hpp"
 
@@ -12,6 +13,7 @@ namespace rendering
     public:
         bool init(SDL_Renderer* ren, float rad);
         void draw(const particles::Particle& p, const core::Color& color);
+        void drawAll(const std::vector<particles::Particle>& particles);
         void destroy();
         
     private:

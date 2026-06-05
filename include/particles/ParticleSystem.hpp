@@ -14,8 +14,8 @@ namespace particles
 
         void emit(float x, float y, int count);
         void update(float gravity, float floor, float dt);
-        void render(rendering::ParticleRenderer& pRenderer);
         size_t count() const;
+        const std::vector<Particle>& getParticles() const;
 
         private:
         std::vector<Particle> particles;
