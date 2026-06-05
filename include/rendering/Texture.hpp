@@ -18,32 +18,13 @@ namespace rendering
         // Cleans up texture variables
         ~Texture();
 
-        // Remove copy constructor
-        Texture( const Texture& ) = delete;
-
-        // Remove copy assignment
-        Texture& operator=( const Texture& ) = delete;
-
-        // Remove move constructor
-        Texture( Texture&& ) = delete;
-
-        // Remove move assignment
-        Texture& operator=( Texture&& ) = delete;
-
-        // Loads texture from disk
-        bool loadFromFile(const std::string& path, SDL_Renderer* renderer);
+        Texture(const Texture& other);
+        Texture(Texture&& other) noexcept;
+        Texture& operator=(const Texture& other);
+        Texture& operator=(Texture&& other) noexcept;
 
         // Cleans up texture
         void destroy();
-
-        // Draws texture
-        void render(SDL_Renderer* renderer, float x, float y);
-        void render_rect(
-            float x, float y,
-            SDL_FRect* clip,
-            float width, float height,
-            SDL_Renderer* renderer
-        );
 
         // Gets texture attributes
         int getWidth() const;
@@ -53,10 +34,14 @@ namespace rendering
     private:
         // Contains texture data
         SDL_Texture* mTexture;
+        SDL_Renderer* mRenderer;
 
         // Texture dimensions
         int mWidth;
         int mHeight;
+
+        void copyFrom(const Texture& other);
+        void swap(Texture& other) noexcept;
     };
 
 }

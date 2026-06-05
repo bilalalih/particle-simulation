@@ -11,7 +11,7 @@ namespace rendering
     {
     public:
         bool init(SDL_Renderer* ren, float rad);
-        void draw(const Particle& p, const core::Color& color);
+        void draw(const particles::Particle& p, const core::Color& color);
         void destroy();
         
     private:

@@ -1,61 +1,112 @@
 #include "rendering/Texture.hpp"
 #include <SDL3_image/SDL_image.h>
+#include <utility>
 
 namespace rendering
 {
     Texture::Texture()
     :
-        // Initialize texture variables
-        mTexture( nullptr ),
+        mTexture(nullptr),
+        mRenderer(nullptr),
         mWidth(0),
         mHeight(0)
     {
+    }
 
+    Texture::Texture(const Texture& other)
+    : mTexture(nullptr), mRenderer(nullptr), mWidth(0), mHeight(0)
+    {
+        copyFrom(other);
+    }
+
+    Texture::Texture(Texture&& other) noexcept
+    : mTexture(other.mTexture), mRenderer(other.mRenderer), mWidth(other.mWidth), mHeight(other.mHeight)
+    {
+        other.mTexture = nullptr;
+        other.mRenderer = nullptr;
+        other.mWidth = 0;
+        other.mHeight = 0;
+    }
+
+    Texture& Texture::operator=(const Texture& other)
+    {
+        if (this != &other)
+        {
+            Texture copy(other);
+            swap(copy);
+        }
+        return *this;
+    }
+
+    Texture& Texture::operator=(Texture&& other) noexcept
+    {
+        if (this != &other)
+        {
+            destroy();
+            mTexture = other.mTexture;
+            mRenderer = other.mRenderer;
+            mWidth = other.mWidth;
+            mHeight = other.mHeight;
+
+            other.mTexture = nullptr;
+            other.mRenderer = nullptr;
+            other.mWidth = 0;
+            other.mHeight = 0;
+        }
+        return *this;
+    }
+
+    void Texture::swap(Texture& other) noexcept
+    {
+        std::swap(mTexture, other.mTexture);
+        std::swap(mRenderer, other.mRenderer);
+        std::swap(mWidth, other.mWidth);
+        std::swap(mHeight, other.mHeight);
+    }
+
+    void Texture::copyFrom(const Texture& other)
+    {
+        if (other.mTexture == nullptr || other.mRenderer == nullptr)
+        {
+            return;
+        }
+
+        float width;
+        float height;
+        if (!SDL_GetTextureSize(other.mTexture, &width, &height))
+        {
+            return;
+        }
+
+        mRenderer = other.mRenderer;
+        mWidth = static_cast<int>(width);
+        mHeight = static_cast<int>(height);
+
+        mTexture = SDL_CreateTexture(mRenderer, SDL_PIXELFORMAT_RGBA8888, SDL_TEXTUREACCESS_TARGET, mWidth, mHeight);
+        if (mTexture == nullptr)
+        {
+            mRenderer = nullptr;
+            mWidth = 0;
+            mHeight = 0;
+            return;
+        }
+
+        SDL_Texture* previousTarget = SDL_GetRenderTarget(mRenderer);
+        SDL_SetRenderTarget(mRenderer, mTexture);
+        SDL_RenderTexture(mRenderer, other.mTexture, nullptr, nullptr);
+        SDL_SetRenderTarget(mRenderer, previousTarget);
+
+        SDL_BlendMode blendMode;
+        if (SDL_GetTextureBlendMode(other.mTexture, &blendMode) == 0)
+        {
+            SDL_SetTextureBlendMode(mTexture, blendMode);
+        }
     }
 
     Texture::~Texture()
     {
         // Clean up texture
         destroy();
-    }
-
-    bool Texture::loadFromFile(const std::string& path, SDL_Renderer* renderer)
-    {
-        // Clean up texture if it already exists
-        destroy();
-
-        // Load surface
-        if (SDL_Surface* loadedSurface = IMG_Load( path.c_str() ); loadedSurface == nullptr)
-        {
-            SDL_Log("Unable To Load Image %s! SDL error: %s\n", path.c_str(), SDL_GetError());
-            return false;
-        }
-        else
-        {
-            // Color key image
-            if (SDL_SetSurfaceColorKey(loadedSurface, true, SDL_MapSurfaceRGB(loadedSurface, 0X00, 0XFF, 0XFF)) == false)
-            {
-                SDL_Log("Unable To Color Key! SDL Error: %s", SDL_GetError());
-            } else
-            {
-                // Create texture from surface pixels
-                if (mTexture = SDL_CreateTextureFromSurface(renderer, loadedSurface); mTexture == nullptr)
-                {
-                    SDL_Log("Unable To Create Texture From %s! SDL error: %s/n ",path.c_str(), SDL_GetError());
-                } else
-                {
-                    // Get image dimensions
-                    mWidth = loadedSurface->w;
-                    mHeight = loadedSurface->h;
-                }
-            }
-            
-            // Clean up loaded surface
-            SDL_DestroySurface( loadedSurface );
-        }
-        
-        // Return success if texture loaded
-        return mTexture != nullptr;
     }
 
     void Texture::destroy()
@@ -65,49 +116,10 @@ namespace rendering
         {
             SDL_DestroyTexture( mTexture );
             mTexture = nullptr;
-            mWidth = 0;
-            mHeight = 0;
         }
-    }
-
-    void Texture::render(SDL_Renderer* renderer, float x, float y)
-    {
-        // Set texture position
-        SDL_FRect dstRect{x, y, static_cast<float>(mWidth), static_cast<float>(mHeight)};
-
-        // Render texture
-        SDL_RenderTexture(renderer, mTexture, nullptr, &dstRect);
-    }
-
-    
-    void Texture::render_rect(
-        float x, float y,
-        SDL_FRect* clip,
-        float width, float height,
-        SDL_Renderer* renderer)
-    {
-        // Set texture position
-        SDL_FRect dstRect{x, y, static_cast<float>(mWidth), static_cast<float>(mHeight)};
-
-        // Default to clip dimensions if clip is given
-        if (clip != nullptr)
-        {
-            dstRect.w = clip->w;
-            dstRect.h = clip->h;
-        }
-        
-        // Resize if new dimensions are given
-        if (width > 0)
-        {
-            dstRect.w = width;
-        }
-        if (height > 0)
-        {
-            dstRect.h = height;
-        }
-
-        // Render Texture
-        SDL_RenderTexture(renderer, mTexture, clip, &dstRect);
+        mRenderer = nullptr;
+        mWidth = 0;
+        mHeight = 0;
     }
 
     int Texture::getWidth() const

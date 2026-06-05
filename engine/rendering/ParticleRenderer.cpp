@@ -39,7 +39,7 @@ namespace rendering
         return true;
     }
 
-    void ParticleRenderer::draw(const Particle& p, const core::Color& color)
+    void ParticleRenderer::draw(const particles::Particle& p, const core::Color& color)
     {
         SDL_FRect dst{
             p.getX() - radius,

@@ -1,5 +1,4 @@
 #include "core/App.hpp"
-#include "rendering/DrawUtils.hpp"
 
 namespace core
 {
@@ -37,45 +36,9 @@ namespace core
 
         return success;
     }
-
-    bool App::loadMedia(const std::string& path)
-    {
-        // File loading flag
-        bool success{ true };
-
-        // Load splash image
-        if (spriteSheetTexture.loadFromFile(path, windowAndRenderer.renderer) == false)
-        {
-            SDL_Log("Unable To Load PNG Image!\n");
-            success = false;
-        }
-
-        return success;
-    }
-
-    bool App::loadPng(const std::string& path)
-    {
-        // File loading flag
-        bool success{ true };
-
-        // Load splash image
-        if (pngTexture.loadFromFile(path, windowAndRenderer.renderer) == false)
-        {
-            SDL_Log("Unable To Load PNG Image!\n");
-            success = false;
-        }
-
-        return success;
-    }
-
     
     void App::close()
     {
-
-        // Clean up Texture
-        pngTexture.destroy();
-        spriteSheetTexture.destroy();
-
         // Destroy Window
         SDL_DestroyRenderer( windowAndRenderer.renderer );
         windowAndRenderer.renderer = nullptr;
@@ -107,68 +70,11 @@ namespace core
         );
     }
 
-    void App::drawParticle(
-    Color& color,
-    Particle& particle)
-    {
-        setDrawColor(color);
-
-        SDL_RenderPoint( windowAndRenderer.renderer, static_cast<int>(particle.getX()), static_cast<int>(particle.getY()));
-    }
-
     void App::endFrame()
     {
         SDL_RenderPresent(
             windowAndRenderer.renderer
         );
-    }
-
-    void App::render_img(Color& color)
-    {
-        if (pngTexture.isLoaded() == false)
-        {
-            SDL_Log("No Texture To Render!\n");
-            return;
-        }
-        // Fill the background 
-        setDrawColor(color);
-        SDL_RenderClear(windowAndRenderer.renderer);
-
-        // Render image on screen
-        pngTexture.render(windowAndRenderer.renderer, 0.f, 0.f);
-
-        // Update screen
-        SDL_RenderPresent(windowAndRenderer.renderer);
-    }
-    
-    void App::render_rectangle_with_dark_background(Color& color)
-    {
-        if (pngTexture.isLoaded() == true)
-        {
-            SDL_Log("There is aTexture To Render!\n");
-            return;
-        }
-        // Fill the background black
-        Color darkBckgrd{ 0, 0, 0, 255 };
-        setDrawColor(darkBckgrd);
-        SDL_RenderClear(windowAndRenderer.renderer);
-
-        // circle
-        setDrawColor(color);
-        SDL_FRect box{
-            600,
-            300,
-            100,
-            100
-        };
-
-        SDL_RenderFillRect(
-            windowAndRenderer.renderer,
-            &box
-        );
-
-        // Update screen
-        SDL_RenderPresent(windowAndRenderer.renderer);
     }
 
     int App::getScreenWidth() const 
@@ -189,11 +95,6 @@ namespace core
     SDL_Window* App::getWindow() const
     {
         return windowAndRenderer.window;
-    }
-
-    rendering::Texture& App::getSpriteSheetTexture()
-    {
-        return spriteSheetTexture;
     }
 
     void App::setDrawColor(Color& color)

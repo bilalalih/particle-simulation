@@ -1,9 +1,9 @@
 add_library(engine STATIC
     rendering/Texture.cpp
     core/App.cpp
-    rendering/DrawUtils.cpp
     rendering/ParticleRenderer.cpp
     particles/Particle.cpp
+    particles/ParticleSystem.cpp
 )
 
 target_include_directories(
