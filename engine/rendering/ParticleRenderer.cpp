@@ -62,8 +62,8 @@ namespace rendering
             
             core::Color c;
             c.r = 255;
-            c.g = 255 * t;
-            c.b = 255 * t;
+            c.g = static_cast<Uint8>(255 * t);
+            c.b = static_cast<Uint8>(255 * t);
             c.a = 255;
 
             draw(p, c);

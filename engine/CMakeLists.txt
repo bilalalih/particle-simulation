@@ -4,6 +4,7 @@ add_library(engine STATIC
     rendering/ParticleRenderer.cpp
     particles/Particle.cpp
     particles/ParticleSystem.cpp
+    particles/ParticleEmitter.cpp
 )
 
 target_include_directories(

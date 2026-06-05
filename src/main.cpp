@@ -1,4 +1,3 @@
-//main.cpp 
 /* Headers */ 
 //Using SDL, SDL_image, and STL string 
 #include "core/App.hpp" 
@@ -6,8 +5,11 @@
 #include "particles/Particle.hpp" 
 #include "particles/ParticleSystem.hpp"
 #include "rendering/ParticleRenderer.hpp"
+#include "particles/ParticleEmitter.hpp"
 #include <cstdlib>
+#include <algorithm>
 #include <SDL3/SDL_main.h> 
+
 int main(int argc, char* argv[]) { 
     
     // Final Exit Code 
@@ -40,6 +42,8 @@ int main(int argc, char* argv[]) {
         rendering::ParticleRenderer particleRenderer;
         particleRenderer.init(application.getRenderer(), 8);
 
+        particles::ParticleEmitter emitter;
+
         // color object 
         core::Color whiteColor{ 255, 255, 255, 255 }; // White color 
         Uint64 previous = SDL_GetTicks();
@@ -51,6 +55,7 @@ int main(int argc, char* argv[]) {
         { 
             Uint64 current = SDL_GetTicks(); 
             float dt = (current - previous) / 1000.0f;
+            dt = std::min(dt, 0.016f);
             previous = current;
 
             // Get event data 
@@ -58,11 +63,17 @@ int main(int argc, char* argv[]) {
              { 
                 if ( e.type == SDL_EVENT_MOUSE_BUTTON_DOWN) 
                 { 
-                    float mx = e.button.x; 
-                    float my = e.button.y; 
-                    
-                    particleSystem.emit(mx, my, 50);
+                    emitter.setPosition(e.button.x, e.button.y);
+                    emitter.start();
                 } 
+                if (e.type == SDL_EVENT_MOUSE_BUTTON_UP)
+                {
+                    emitter.stop();
+                }
+                if (e.type == SDL_EVENT_MOUSE_MOTION)
+                {
+                    emitter.setPosition(e.button.x, e.button.y);
+                }
                 else if (e.type == SDL_EVENT_QUIT) 
                 { 
                     // End the main loop 
@@ -73,6 +84,9 @@ int main(int argc, char* argv[]) {
             // Creates a Frame 
             application.beginFrame();
             
+            // emit
+            emitter.update(dt, particleSystem);
+
             // Update state 
             particleSystem.update(gravity, height, dt);
 
@@ -84,7 +98,7 @@ int main(int argc, char* argv[]) {
 
             
             // FPS timer, it logs our FPS Rate to my terminal.
-            // the condition (fpsTimer > 1) means we render the FPS only after a minute.
+            // the condition (fpsTimer > 1) means we render the FPS only after a second
             static float fpsTimer = 0;
             static int frames = 0;
             fpsTimer += dt;
