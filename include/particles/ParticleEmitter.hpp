@@ -8,8 +8,9 @@ namespace particles
     class ParticleEmitter
     {
     public:
+        ParticleEmitter();
+
         void setPosition(float px, float py);
-        
         void start();
         void stop();
         void setRate(float rate);
@@ -17,19 +18,15 @@ namespace particles
         void setSpread(float degrees);
 
         void update(float dt, ParticleSystem& system);
+
     private:
-
-        float x {};
-        float y {};
-
-        float vx {};
-        float vy {};
+        Vec2f position{};
+        Vec2f velocity{};
 
         float spread{0};
-        bool active {false};
-
-        float emissionRate{ 100 };
-        float accumulator;
+        bool active{false};
+        float emissionRate{100};
+        float accumulator{0.0f};
     };
     
 }

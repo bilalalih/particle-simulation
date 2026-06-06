@@ -17,46 +17,108 @@ namespace particles
 
     float Particle::getX() const 
     { 
-        return position.at(0); 
+        return position.x(); 
     }
 
     float Particle::getY() const 
     { 
-        return position.at(1); 
+        return position.y(); 
+    }
+
+    float Particle::getVX() const
+    {
+        return velocity.x();
+    }
+
+    float Particle::getVY() const
+    {
+        return velocity.y();
+    }
+
+    const Vec2f& Particle::getPosition() const
+    {
+        return position;
+    }
+
+    const Vec2f& Particle::getVelocity() const
+    {
+        return velocity;
+    }
+
+    void Particle::setX(float x)
+    {
+        position.x() = x;
+    }
+
+    void Particle::setY(float y)
+    {
+        position.y() = y;
+    }
+
+    void Particle::setPosition(float x, float y)
+    {
+        position.x() = x;
+        position.y() = y;
+    }
+
+    void Particle::setVY(float vy)
+    {
+        velocity.y() = vy;
+    }
+
+    void Particle::setVX(float vx)
+    {
+        velocity.x() = vx;
     }
 
     void Particle::addVelocity(float dx, float dy) 
     { 
-        velocity.at(0) += dx; 
-        velocity.at(1) += dy; 
+        velocity.x() += dx; 
+        velocity.y() += dy; 
+    }
+
+    void Particle::addVelocity(const Vec2f& dv)
+    {
+        velocity += dv;
     }
 
     void Particle::mulVelocity(float dx, float dy)
     {
-        velocity.at(0) *= dx; 
-        velocity.at(1) *= dy; 
+        velocity.x() *= dx; 
+        velocity.y() *= dy; 
+    }
+
+    void Particle::mulVelocity(const Vec2f& factor)
+    {
+        velocity.x() *= factor.x();
+        velocity.y() *= factor.y();
     }
 
     void Particle::setVelocity(float dx, float dy)
     {
-        velocity.at(0) = dx; 
-        velocity.at(1) = dy; 
+        velocity.x() = dx; 
+        velocity.y() = dy; 
+    }
+
+    void Particle::setVelocity(const Vec2f& vel)
+    {
+        velocity = vel;
     }
 
     void Particle::initRandomParticle(float mx, float my)
     {
-        position.at(0) = mx; 
-        position.at(1) = my; 
+        position.x() = mx; 
+        position.y() = my; 
         life = 15.0f;
-        velocity.at(1) = -200 - (rand() % 300); 
-        velocity.at(0) = -(rand()%400) - 200;
+        velocity.y() = -200 - (rand() % 300); 
+        velocity.x() = -(rand() % 400) - 200;
     }
 
     void Particle::initRandP()
     {
-        velocity.at(0) = (rand()%800)-400;
-        velocity.at(1) = -(rand()%800);
-        life=10;
+        velocity.x() = (rand() % 800) - 400;
+        velocity.y() = -(rand() % 800);
+        life = 10;
     }
 
     float Particle::getLife() const
@@ -71,22 +133,8 @@ namespace particles
 
     void Particle::integrate(float dt)
     {                   
-        position.at(0) += velocity.at(0) * dt; 
-        position.at(1) += velocity.at(1) * dt ;
-        
-        // energy loss
-        velocity.at(0) *= 0.995f;
-        velocity.at(1) *= 0.999f;
+        position += velocity * dt; 
         life -= dt;               
-    }
-
-    void Particle::floor(float f)
-    {
-        if (position.at(1) > f)
-        {
-            position.at(1) = f;
-            velocity.at(1)*=-0.8f;
-        }
     }
 
     int Particle::getRadius() const 

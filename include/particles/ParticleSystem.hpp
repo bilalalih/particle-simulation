@@ -14,6 +14,8 @@ namespace particles
     public:
         ParticleSystem();
 
+        void emit(float x, float y, int count);
+        void resolveFloor(Particle& p, float floor);
         void update(float floor, float dt);
         void addForce(std::unique_ptr<forces::Force> force);
         size_t count() const;

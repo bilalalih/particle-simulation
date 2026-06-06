@@ -18,6 +18,14 @@ namespace rendering
 
         if (!texture) return false;
 
+        if (SDL_SetTextureBlendMode(texture, SDL_BLENDMODE_BLEND) != 0)
+        {
+            SDL_Log("Failed to set particle texture blend mode: %s", SDL_GetError());
+            SDL_DestroyTexture(texture);
+            texture = nullptr;
+            return false;
+        }
+
         SDL_SetRenderTarget(renderer, texture);
         SDL_SetRenderDrawColor(renderer, 0, 0, 0, 0);
         SDL_RenderClear(renderer);

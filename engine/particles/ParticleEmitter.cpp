@@ -3,10 +3,20 @@
 
 namespace particles
 {
+    ParticleEmitter::ParticleEmitter()
+        : position{0.f, 0.f}
+        , velocity{0.f, 0.f}
+        , spread{0.f}
+        , active(false)
+        , emissionRate(100.f)
+        , accumulator(0.f)
+    {
+    }
+
     void ParticleEmitter::setPosition(float px, float py)
     {
-        x = px;
-        y = py;
+        position.x() = px;
+        position.y() = py;
     }
 
     void ParticleEmitter::start()
@@ -31,8 +41,8 @@ namespace particles
 
     void ParticleEmitter::setVelocity(float vx_, float vy_)
     {
-        vx = vx_;
-        vy = vy_;
+        velocity.x() = vx_;
+        velocity.y() = vy_;
     }
 
     void ParticleEmitter::update(float dt, ParticleSystem& system)
@@ -41,15 +51,17 @@ namespace particles
 
         accumulator += emissionRate * dt;
 
-        while (accumulator >= 1)
+        while (accumulator >= 1.0f)
         {
-            Particle p(x, y, 0, 0);
-            float offset = (rand()%1000 / 1000.0f - 0.5f) * spread;
-            p.setVelocity(float(vx + offset), float(vy + offset));
-            p.setLife(15);
+            Particle p(position.x(), position.y(), 0.0f, 0.0f);
+            float angle = (rand() % 1000 / 1000.0f - 0.5f) * spread;
+            Vec2f particleVelocity = velocity;
+            particleVelocity.x() += angle;
+            p.setVelocity(particleVelocity);
+            p.setLife(15.0f);
             system.addParticle(p);
 
-            accumulator--;
+            accumulator -= 1.0f;
         }
     }
 }

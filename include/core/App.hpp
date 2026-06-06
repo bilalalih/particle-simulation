@@ -25,7 +25,7 @@ namespace core
 
         // Render functions.
         void beginFrame();
-        void beginFrame(Color& c);
+        void beginFrame(const Color& c);
         void endFrame();
 
         int getScreenWidth() const;
@@ -39,7 +39,7 @@ namespace core
         WindowAndRenderer windowAndRenderer;
         ScreenCfg screenCfg;
 
-        void setDrawColor(Color& color);
+        void setDrawColor(const Color& color);
     };
 }
 

@@ -7,7 +7,7 @@ namespace core
         // Initialization Flag
         bool success{ true };
         
-        if (SDL_Init(SDL_INIT_VIDEO) == false)
+        if (SDL_Init(SDL_INIT_VIDEO) != 0)
         {
             SDL_Log("SDL could not initialize! SDL Error: %s\n", SDL_GetError());
             success = false;
@@ -22,7 +22,7 @@ namespace core
                 0,
                 &windowAndRenderer.window,
                 &windowAndRenderer.renderer
-                ) == false
+                ) != 0
             ){
                 SDL_Log("Window could not be created! SDL Error: %s\n", SDL_GetError());
                 success = false;
@@ -61,7 +61,7 @@ namespace core
     }
 
     
-    void App::beginFrame(Color& c)
+    void App::beginFrame(const Color& c)
     {
         setDrawColor(c);
 
@@ -97,7 +97,7 @@ namespace core
         return windowAndRenderer.window;
     }
 
-    void App::setDrawColor(Color& color)
+    void App::setDrawColor(const Color& color)
     {
         SDL_SetRenderDrawColor(windowAndRenderer.renderer, color.r, color.g, color.b, color.a);
     }

@@ -7,6 +7,7 @@ add_library(engine STATIC
     particles/ParticleEmitter.cpp
     forces/GravityForce.cpp
     forces/DragForce.cpp
+    forces/WindForce.cpp
 )
 
 target_include_directories(

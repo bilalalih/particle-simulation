@@ -20,18 +20,30 @@ public:
     inline Vec<T, N> operator-(const Vec<T, N>& other) const;
     inline Vec<T, N> operator*(const Vec<T, N>& other) const;
     inline Vec<T, N> operator/(const Vec<T, N>& other) const;
+    inline Vec<T, N> operator*(T scalar) const;
+    inline Vec<T, N> operator/(T scalar) const;
     inline Vec<T, N>& operator+=(const Vec<T, N>& other);
     inline Vec<T, N>& operator-=(const Vec<T, N>& other);
     inline Vec<T, N>& operator*=(const Vec<T, N>& other);
     inline Vec<T, N>& operator/=(const Vec<T, N>& other);
+    inline Vec<T, N>& operator*=(T scalar);
+    inline Vec<T, N>& operator/=(T scalar);
 
-    size_t length() const;
+    double length() const;
     double dot(const Vec<T, N>& other) const;
     Vec<T, N> normalized() const;
 
 
     T  at(int i) const;
     T& at(int i);
+    T& operator[](int i);
+    const T& operator[](int i) const;
+    T& x();
+    T& y();
+
+   const T& x() const;
+   const T& y() const;
+
 private:
     T data[N];
 };

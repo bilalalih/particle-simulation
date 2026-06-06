@@ -8,6 +8,7 @@
 #include "particles/ParticleEmitter.hpp"
 #include "forces/GravityForce.hpp"
 #include "forces/DragForce.hpp"
+#include "forces/WindForce.hpp"
 #include <cstdlib>
 #include <algorithm>
 #include <SDL3/SDL_main.h> 
@@ -35,7 +36,7 @@ int main(int argc, char* argv[]) {
         bool quit{ false };
 
         // The event data 
-        SDL_Event(e); 
+        SDL_Event e; 
         SDL_zero(e);
         
         // Create an empty particle space 
@@ -43,7 +44,8 @@ int main(int argc, char* argv[]) {
         
         particleSystem.addForce(std::make_unique<forces::GravityForce>(500));
         particleSystem.addForce(std::make_unique<forces::DragForce>(0.999f));
-        
+        particleSystem.addForce(std::make_unique<forces::WindForce>(100));
+
         rendering::ParticleRenderer particleRenderer;
         particleRenderer.init(application.getRenderer(), 8);
 
@@ -57,41 +59,41 @@ int main(int argc, char* argv[]) {
 
         fountain.start();
 
-        // color object 
-        core::Color whiteColor{ 255, 255, 255, 255 }; // White color 
         Uint64 previous = SDL_GetTicks();
         int height = application.getScreenHeight();
-        float gravity = 500; 
 
         // The main loop 
-        while (quit == false) 
+        while (!quit) 
         { 
             Uint64 current = SDL_GetTicks(); 
             float dt = (current - previous) / 1000.0f;
             dt = std::min(dt, 0.016f);
             previous = current;
 
-            // Get event data 
-             while (SDL_PollEvent( &e ) == true) 
-             { 
-                if ( e.type == SDL_EVENT_MOUSE_BUTTON_DOWN) 
-                { 
-                    emitter.setPosition(e.button.x, e.button.y);
-                    emitter.start();
-                } 
-                if (e.type == SDL_EVENT_MOUSE_BUTTON_UP)
+            while (SDL_PollEvent(&e) != 0) 
+            { 
+                switch (e.type)
                 {
-                    emitter.stop();
+                    case SDL_EVENT_MOUSE_BUTTON_DOWN:
+                        emitter.setPosition(e.button.x, e.button.y);
+                        emitter.start();
+                        break;
+
+                    case SDL_EVENT_MOUSE_BUTTON_UP:
+                        emitter.stop();
+                        break;
+
+                    case SDL_EVENT_MOUSE_MOTION:
+                        emitter.setPosition(e.motion.x, e.motion.y);
+                        break;
+
+                    case SDL_EVENT_QUIT:
+                        quit = true; 
+                        break;
+
+                    default:
+                        break;
                 }
-                if (e.type == SDL_EVENT_MOUSE_MOTION)
-                {
-                    emitter.setPosition(e.button.x, e.button.y);
-                }
-                else if (e.type == SDL_EVENT_QUIT) 
-                { 
-                    // End the main loop 
-                    quit = true; 
-                } 
             } 
             
             // Creates a Frame 

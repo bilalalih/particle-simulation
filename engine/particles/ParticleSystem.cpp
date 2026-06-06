@@ -1,10 +1,30 @@
 #include "particles/ParticleSystem.hpp"
+#include <algorithm>
 
 namespace particles
 {
     ParticleSystem::ParticleSystem()
     {
         particles.reserve(10000);
+    }
+
+    void ParticleSystem::emit(float x, float y, int count)
+    {
+        for(int i = 0; i < count; i++)
+        {
+            Particle p;
+            p.initRandomParticle(x, y);
+            addParticle(p);
+        }
+    }
+
+    void ParticleSystem::resolveFloor(Particle& p, float f)
+    {
+        if (p.getY() + p.getRadius() > f)
+        {
+            p.setY(f - p.getRadius());
+            p.setVY(-0.8f * p.getVY());
+        }
     }
 
     void ParticleSystem::update(float floor, float dt)
@@ -17,7 +37,7 @@ namespace particles
             }
 
             p.integrate(dt);
-            p.floor(floor);
+            resolveFloor(p, floor);
         }
 
         removeDead();
@@ -35,17 +55,16 @@ namespace particles
 
     void ParticleSystem::removeDead()
     {
-        size_t alive = 0;
-
-        for (size_t i = 0; i < particles.size(); i++)
-        {
-            if (particles[i].getLife() > 0)
-            {
-                particles[alive++] = particles[i];
-            }
-        }
-
-        particles.resize(alive);
+        particles.erase(
+            std::remove_if(
+                particles.begin(),
+                particles.end(),
+                [](const Particle& particle) {
+                    return particle.getLife() <= 0.0f;
+                }
+            ),
+            particles.end()
+        );
     }
 
     void ParticleSystem::addParticle(const Particle& p)

@@ -100,12 +100,62 @@ inline Vec<T, N>& Vec<T, N>::operator/=(const Vec<T, N>& other)
 }
 
 template<typename T, int N>
-size_t Vec<T, N>::length() const
+inline Vec<T, N> Vec<T, N>::operator*(T scalar) const
+{
+    Vec<T, N> result;
+    for (int i = 0; i < N; ++i)
+    {
+        result.data[i] = data[i] * scalar;
+    }
+    return result;
+}
+
+template<typename T, int N>
+inline Vec<T, N> Vec<T, N>::operator/(T scalar) const
+{
+    if (scalar == T(0))
+    {
+        throw std::runtime_error("Division by zero in Vec operator/");
+    }
+    Vec<T, N> result;
+    for (int i = 0; i < N; ++i)
+    {
+        result.data[i] = data[i] / scalar;
+    }
+    return result;
+}
+
+template<typename T, int N>
+inline Vec<T, N>& Vec<T, N>::operator*=(T scalar)
+{
+    for (int i = 0; i < N; ++i)
+    {
+        data[i] *= scalar;
+    }
+    return *this;
+}
+
+template<typename T, int N>
+inline Vec<T, N>& Vec<T, N>::operator/=(T scalar)
+{
+    if (scalar == T(0))
+    {
+        throw std::runtime_error("Division by zero in Vec operator/=");
+    }
+    for (int i = 0; i < N; ++i)
+    {
+        data[i] /= scalar;
+    }
+    return *this;
+}
+
+template<typename T, int N>
+double Vec<T, N>::length() const
 {
     double sum = 0.0;
     for (int i = 0; i < N; ++i)
     {
-        sum += data[i] * data[i];
+        sum += static_cast<double>(data[i]) * static_cast<double>(data[i]);
     }
     return std::sqrt(sum);
 }
@@ -116,7 +166,7 @@ double Vec<T, N>::dot(const Vec<T, N>& other) const
     double result = 0.0;
     for (int i = 0; i < N; ++i)
     {
-        result += data[i] * other.data[i];
+        result += static_cast<double>(data[i]) * static_cast<double>(other.data[i]);
     }
     return result;
 }
@@ -150,4 +200,44 @@ T& Vec<T, N>::at(int i)
 {   
     assert(i >= 0 && i < N);
     return data[i];
+}
+
+template<typename T, int N>
+T& Vec<T, N>::operator[](int i)
+{
+    return data[i];
+}
+
+template<typename T, int N>
+const T& Vec<T, N>::operator[](int i) const
+{
+    return data[i];
+}
+
+template<typename T,int N>
+T& Vec<T,N>::x()
+{
+    static_assert(N >= 1);
+    return data[0];
+}
+
+template<typename T,int N>
+T& Vec<T,N>::y()
+{
+    static_assert(N >= 2);
+    return data[1];
+}
+
+template<typename T,int N>
+const T& Vec<T,N>::x() const
+{
+    static_assert(N >= 1);
+    return data[0];
+}
+
+template<typename T,int N>
+const T& Vec<T,N>::y() const
+{
+    static_assert(N >= 2);
+    return data[1];
 }
