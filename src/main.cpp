@@ -9,6 +9,7 @@
 #include "forces/GravityForce.hpp"
 #include "forces/DragForce.hpp"
 #include "forces/WindForce.hpp"
+#include "particles/shapes/CircleShape.hpp"
 #include <cstdlib>
 #include <algorithm>
 #include <SDL3/SDL_main.h> 
@@ -47,9 +48,17 @@ int main(int argc, char* argv[]) {
         particleSystem.addForce(std::make_unique<forces::WindForce>(100));
 
         rendering::ParticleRenderer particleRenderer;
-        particleRenderer.init(application.getRenderer(), 8);
+        if (!particleRenderer.init(application.getRenderer(), 8))
+        {
+            SDL_Log("Particle renderer initialization failed");
+            application.close();
+            return 1;
+        }
 
         particles::ParticleEmitter emitter;
+        auto shape = std::make_unique<particles::CircleShape>(0,0,100);
+        auto* shapePtr = shape.get();
+        emitter.setShape(std::move(shape));
         particles::ParticleEmitter fountain;
 
         fountain.setPosition(50,50);
@@ -67,10 +76,9 @@ int main(int argc, char* argv[]) {
         { 
             Uint64 current = SDL_GetTicks(); 
             float dt = (current - previous) / 1000.0f;
-            dt = std::min(dt, 0.016f);
             previous = current;
 
-            while (SDL_PollEvent(&e) != 0) 
+            while (SDL_PollEvent(&e) != false) 
             { 
                 switch (e.type)
                 {
@@ -84,7 +92,7 @@ int main(int argc, char* argv[]) {
                         break;
 
                     case SDL_EVENT_MOUSE_MOTION:
-                        emitter.setPosition(e.motion.x, e.motion.y);
+                        shapePtr->setPosition(e.motion.x, e.motion.y);
                         break;
 
                     case SDL_EVENT_QUIT:
@@ -126,15 +134,6 @@ int main(int argc, char* argv[]) {
                 frames=0;
                 fpsTimer=0;
             }
-
-           static float timer = 0.f;
-           timer += dt;
-           if (timer > 1.0f)
-           {
-                SDL_Log("Particles: %zu",particleSystem.count());
-                timer = 0;
-           }
-           
         } 
         particleRenderer.destroy();
     } 

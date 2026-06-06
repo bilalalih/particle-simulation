@@ -18,17 +18,12 @@ namespace rendering
 
         if (!texture) return false;
 
-        if (SDL_SetTextureBlendMode(texture, SDL_BLENDMODE_BLEND) != 0)
-        {
-            SDL_Log("Failed to set particle texture blend mode: %s", SDL_GetError());
-            SDL_DestroyTexture(texture);
-            texture = nullptr;
-            return false;
+        if (!SDL_SetTextureBlendMode(texture, SDL_BLENDMODE_BLEND))
+        { 
+            SDL_Log("Blend mode setup failed: %s", SDL_GetError());
         }
 
         SDL_SetRenderTarget(renderer, texture);
-        SDL_SetRenderDrawColor(renderer, 0, 0, 0, 0);
-        SDL_RenderClear(renderer);
         SDL_SetRenderDrawColor(renderer, 255, 255, 255, 255);
 
         int ir = static_cast<int>(radius);
@@ -44,6 +39,7 @@ namespace rendering
         }
 
         SDL_SetRenderTarget(renderer, nullptr);
+        SDL_RenderPresent(renderer);
         return true;
     }
 
@@ -58,8 +54,10 @@ namespace rendering
 
         SDL_SetTextureColorMod(texture, color.r, color.g, color.b);
         SDL_SetTextureAlphaMod(texture, color.a);
-
-        SDL_RenderTexture(renderer, texture, nullptr, &dst);
+        if(!SDL_RenderTexture(renderer, texture, nullptr, &dst))
+        {
+            SDL_Log("Render failed: %s", SDL_GetError());
+        }
     }
 
     void ParticleRenderer::drawAll(const std::vector<particles::Particle>& particles)

@@ -9,7 +9,7 @@ namespace forces
     {
     public:
         WindForce(float strength);
-        void apply(particles::Particle& p, float dt) override;
+        void apply(particles::Particle& p) override;
 
     private:
         float strength {};

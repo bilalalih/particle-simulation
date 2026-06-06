@@ -7,7 +7,7 @@ namespace core
         // Initialization Flag
         bool success{ true };
         
-        if (SDL_Init(SDL_INIT_VIDEO) != 0)
+        if (SDL_Init(SDL_INIT_VIDEO) == false)
         {
             SDL_Log("SDL could not initialize! SDL Error: %s\n", SDL_GetError());
             success = false;
@@ -22,7 +22,7 @@ namespace core
                 0,
                 &windowAndRenderer.window,
                 &windowAndRenderer.renderer
-                ) != 0
+                ) == false
             ){
                 SDL_Log("Window could not be created! SDL Error: %s\n", SDL_GetError());
                 success = false;

@@ -5,6 +5,8 @@ add_library(engine STATIC
     particles/Particle.cpp
     particles/ParticleSystem.cpp
     particles/ParticleEmitter.cpp
+    particles/shapes/PointShape.cpp
+    particles/shapes/CircleShape.cpp
     forces/GravityForce.cpp
     forces/DragForce.cpp
     forces/WindForce.cpp

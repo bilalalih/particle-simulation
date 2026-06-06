@@ -1,3 +1,4 @@
+#include <random>
 #include "particles/Particle.hpp"
 
 namespace particles
@@ -104,7 +105,7 @@ namespace particles
     {
         velocity = vel;
     }
-    
+
     void Particle::addForce(float fx, float fy)
     {
         acceleration.x() += fx;
@@ -127,24 +128,35 @@ namespace particles
         return acceleration.x();
     }
 
-    float Particle::getAX() const 
+    static std::mt19937& getParticleRng()
     {
-        return acceleration.x();
+        static thread_local std::mt19937 rng(std::random_device{}());
+        return rng;
+    }
+
+    float Particle::getAY() const 
+    {
+        return acceleration.y();
     }
 
     void Particle::initRandomParticle(float mx, float my)
     {
+        static std::uniform_int_distribution<int> velYDist(0, 299);
+        static std::uniform_int_distribution<int> velXDist(0, 399);
+
         position.x() = mx; 
         position.y() = my; 
         life = 15.0f;
-        velocity.y() = -200 - (rand() % 300); 
-        velocity.x() = -(rand() % 400) - 200;
+        velocity.y() = -200.0f - static_cast<float>(velYDist(getParticleRng()));
+        velocity.x() = -static_cast<float>(velXDist(getParticleRng())) - 200.0f;
     }
 
     void Particle::initRandP()
     {
-        velocity.x() = (rand() % 800) - 400;
-        velocity.y() = -(rand() % 800);
+        static std::uniform_int_distribution<int> range800(0, 799);
+
+        velocity.x() = static_cast<float>(range800(getParticleRng())) - 400.0f;
+        velocity.y() = -static_cast<float>(range800(getParticleRng()));
         life = 10;
     }
 

@@ -5,8 +5,8 @@ namespace forces
     WindForce::WindForce(float s) : strength(s)
     {}
 
-    void WindForce::apply(particles::Particle& p, float dt)
+    void WindForce::apply(particles::Particle& p)
     {
-        p.addVelocity(strength * dt, 0);
+        p.addForce(strength, 0);
     }
 }

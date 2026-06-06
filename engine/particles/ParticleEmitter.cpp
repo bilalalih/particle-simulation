@@ -1,3 +1,5 @@
+#include <random>
+#include <SDL3/SDL_log.h>
 #include "particles/ParticleEmitter.hpp"
 #include "particles/ParticleSystem.hpp"
 
@@ -45,16 +47,43 @@ namespace particles
         velocity.y() = vy_;
     }
 
+    void ParticleEmitter::setShape(std::unique_ptr<EmissionShape> s)
+    {
+        shape = std::move(s);
+    }
+
+    namespace {
+        static std::mt19937& emitterRng()
+        {
+            static thread_local std::mt19937 rng(std::random_device{}());
+            return rng;
+        }
+
+        static std::uniform_real_distribution<float> emitterAngleDist(-0.5f, 0.5f);
+    }
+
     void ParticleEmitter::update(float dt, ParticleSystem& system)
     {
-        if (!active) return;
+        if (!active) 
+        {
+            return;
+        }
 
         accumulator += emissionRate * dt;
 
         while (accumulator >= 1.0f)
         {
-            Particle p(position.x(), position.y(), 0.0f, 0.0f);
-            float angle = (rand() % 1000 / 1000.0f - 0.5f) * spread;
+            float x = position.x();
+            float y = position.y();
+            if (shape)
+            {
+                auto sampled = shape->sample();
+                x = sampled.first;
+                y = sampled.second;
+            }
+
+            Particle p(x, y, 0.0f, 0.0f);
+            float angle = emitterAngleDist(emitterRng()) * spread;
             Vec2f particleVelocity = velocity;
             particleVelocity.x() += angle;
             p.setVelocity(particleVelocity);

@@ -1,7 +1,9 @@
 #ifndef PARTICLE_EMITTER_HPP
 #define PARTICLE_EMITTER_HPP
 
+#include <memory>
 #include "math/Vec.hpp"
+#include "particles/shapes/EmissionShape.hpp"
 
 namespace particles
 {
@@ -18,10 +20,12 @@ namespace particles
         void setRate(float rate);
         void setVelocity(float vx, float vy);
         void setSpread(float degrees);
+        void setShape(std::unique_ptr<EmissionShape> s);
 
         void update(float dt, ParticleSystem& system);
 
     private:
+        std::unique_ptr<EmissionShape> shape;
         Vec2f position{};
         Vec2f velocity{};
 
