@@ -5,6 +5,8 @@ add_library(engine STATIC
     particles/Particle.cpp
     particles/ParticleSystem.cpp
     particles/ParticleEmitter.cpp
+    forces/GravityForce.cpp
+    forces/DragForce.cpp
 )
 
 target_include_directories(

@@ -25,6 +25,24 @@ namespace particles
         return position.at(1); 
     }
 
+    void Particle::addVelocity(float dx, float dy) 
+    { 
+        velocity.at(0) += dx; 
+        velocity.at(1) += dy; 
+    }
+
+    void Particle::mulVelocity(float dx, float dy)
+    {
+        velocity.at(0) *= dx; 
+        velocity.at(1) *= dy; 
+    }
+
+    void Particle::setVelocity(float dx, float dy)
+    {
+        velocity.at(0) = dx; 
+        velocity.at(1) = dy; 
+    }
+
     void Particle::initRandomParticle(float mx, float my)
     {
         position.at(0) = mx; 
@@ -46,23 +64,29 @@ namespace particles
         return life;
     }
 
-    void Particle::update(const float g, const int h, const float dt)
+    void Particle::setLife(float l)
     {
-        velocity.at(1) += g * dt; 
-                        
+        life = l;
+    }
+
+    void Particle::integrate(float dt)
+    {                   
         position.at(0) += velocity.at(0) * dt; 
         position.at(1) += velocity.at(1) * dt ;
         
         // energy loss
         velocity.at(0) *= 0.995f;
         velocity.at(1) *= 0.999f;
-        life -= dt;
-                                            
-        if (position.at(1) > h)
+        life -= dt;               
+    }
+
+    void Particle::floor(float f)
+    {
+        if (position.at(1) > f)
         {
-            position.at(1)=h;
+            position.at(1) = f;
             velocity.at(1)*=-0.8f;
-        }               
+        }
     }
 
     int Particle::getRadius() const 

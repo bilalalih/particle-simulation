@@ -24,10 +24,15 @@ namespace particles
         Particle(float x, float y, float vx, float vy, float radius);
         float getX() const;
         float getY() const;
+        void addVelocity(float dx, float dy);
+        void mulVelocity(float dx, float dy);
+        void setVelocity(float vx, float vy);
         float getLife() const;
+        void setLife(float life);
+        void floor(float floor);
         void initRandomParticle(float mx, float my);
         void initRandP();
-        void update(const float g, const int h, const float dt);
+        void integrate(float dt);
         int getRadius() const;
     };
 }

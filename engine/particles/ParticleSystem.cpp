@@ -7,24 +7,25 @@ namespace particles
         particles.reserve(10000);
     }
 
-    void ParticleSystem::emit(float x, float y, int count)
-    {
-        for(int i = 0; i < count; i++)
-        {
-            Particle p(x, y, 0.f, 0.f);
-            p.initRandomParticle(x, y);
-            particles.push_back(p);
-        }
-    }
-
-    void ParticleSystem::update(float gravity, float floor, float dt)
+    void ParticleSystem::update(float floor, float dt)
     {
         for (auto& p : particles)
         {
-            p.update(gravity, floor, dt);
+            for (auto& force : forces)
+            {
+                force->apply(p, dt);
+            }
+
+            p.integrate(dt);
+            p.floor(floor);
         }
 
         removeDead();
+    }
+
+    void ParticleSystem::addForce(std::unique_ptr<forces::Force> force)
+    {
+        forces.push_back(std::move(force));
     }
 
     const std::vector<Particle>& ParticleSystem::getParticles() const
@@ -45,6 +46,11 @@ namespace particles
         }
 
         particles.resize(alive);
+    }
+
+    void ParticleSystem::addParticle(const Particle& p)
+    {
+        particles.push_back(p);
     }
 
     size_t ParticleSystem::count() const

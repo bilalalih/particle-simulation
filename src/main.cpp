@@ -6,6 +6,8 @@
 #include "particles/ParticleSystem.hpp"
 #include "rendering/ParticleRenderer.hpp"
 #include "particles/ParticleEmitter.hpp"
+#include "forces/GravityForce.hpp"
+#include "forces/DragForce.hpp"
 #include <cstdlib>
 #include <algorithm>
 #include <SDL3/SDL_main.h> 
@@ -39,10 +41,21 @@ int main(int argc, char* argv[]) {
         // Create an empty particle space 
         particles::ParticleSystem particleSystem;
         
+        particleSystem.addForce(std::make_unique<forces::GravityForce>(500));
+        particleSystem.addForce(std::make_unique<forces::DragForce>(0.999f));
+        
         rendering::ParticleRenderer particleRenderer;
         particleRenderer.init(application.getRenderer(), 8);
 
         particles::ParticleEmitter emitter;
+        particles::ParticleEmitter fountain;
+
+        fountain.setPosition(50,50);
+        fountain.setRate(400);
+        fountain.setVelocity(0, -500);
+        fountain.setSpread(300);
+
+        fountain.start();
 
         // color object 
         core::Color whiteColor{ 255, 255, 255, 255 }; // White color 
@@ -86,9 +99,10 @@ int main(int argc, char* argv[]) {
             
             // emit
             emitter.update(dt, particleSystem);
+            fountain.update(dt, particleSystem);
 
             // Update state 
-            particleSystem.update(gravity, height, dt);
+            particleSystem.update(height, dt);
 
             // Render image
             particleRenderer.drawAll(particleSystem.getParticles());

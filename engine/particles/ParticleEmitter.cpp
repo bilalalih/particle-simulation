@@ -19,6 +19,22 @@ namespace particles
         active = false;
     }
 
+    void ParticleEmitter::setRate(float r)
+    {
+        emissionRate = r;
+    }
+
+    void ParticleEmitter::setSpread(float d)
+    {
+        spread = d;
+    } 
+
+    void ParticleEmitter::setVelocity(float vx_, float vy_)
+    {
+        vx = vx_;
+        vy = vy_;
+    }
+
     void ParticleEmitter::update(float dt, ParticleSystem& system)
     {
         if (!active) return;
@@ -27,8 +43,13 @@ namespace particles
 
         while (accumulator >= 1)
         {
-            system.emit(x, y, 1);
-            accumulator -= 1;
+            Particle p(x, y, 0, 0);
+            float offset = (rand()%1000 / 1000.0f - 0.5f) * spread;
+            p.setVelocity(float(vx + offset), float(vy + offset));
+            p.setLife(15);
+            system.addParticle(p);
+
+            accumulator--;
         }
     }
 }
