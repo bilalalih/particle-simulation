@@ -1,4 +1,5 @@
 #include <random>
+#include <cmath>
 #include <SDL3/SDL_log.h>
 #include "particles/ParticleEmitter.hpp"
 #include "particles/ParticleSystem.hpp"
@@ -9,6 +10,8 @@ namespace particles
         : position{0.f, 0.f}
         , velocity{0.f, 0.f}
         , spread{0.f}
+        , particleLife(15.f)
+        , particleRadius(4.f)
         , active(false)
         , emissionRate(100.f)
         , accumulator(0.f)
@@ -19,6 +22,11 @@ namespace particles
     {
         position.x() = px;
         position.y() = py;
+
+        if (shape)
+        {
+            shape->setPosition(px, py);
+        }
     }
 
     void ParticleEmitter::start()
@@ -41,6 +49,16 @@ namespace particles
         spread = d;
     } 
 
+    void ParticleEmitter::setParticleLife(float seconds)
+    {
+        particleLife = seconds;
+    }
+
+    void ParticleEmitter::setParticleRadius(float radius)
+    {
+        particleRadius = radius;
+    }
+
     void ParticleEmitter::setVelocity(float vx_, float vy_)
     {
         velocity.x() = vx_;
@@ -50,6 +68,11 @@ namespace particles
     void ParticleEmitter::setShape(std::unique_ptr<EmissionShape> s)
     {
         shape = std::move(s);
+
+        if (shape)
+        {
+            shape->setPosition(position.x(), position.y());
+        }
     }
 
     namespace {
@@ -82,12 +105,20 @@ namespace particles
                 y = sampled.second;
             }
 
-            Particle p(x, y, 0.0f, 0.0f);
-            float angle = emitterAngleDist(emitterRng()) * spread;
+            Particle p(x, y, 0.0f, 0.0f, particleRadius);
+            float angle = emitterAngleDist(emitterRng()) * spread * 0.0174532925f;
             Vec2f particleVelocity = velocity;
-            particleVelocity.x() += angle;
+            if (spread != 0.0f)
+            {
+                float cs = std::cos(angle);
+                float sn = std::sin(angle);
+                particleVelocity = {
+                    velocity.x() * cs - velocity.y() * sn,
+                    velocity.x() * sn + velocity.y() * cs
+                };
+            }
             p.setVelocity(particleVelocity);
-            p.setLife(15.0f);
+            p.setLife(particleLife);
             system.addParticle(p);
 
             accumulator -= 1.0f;

@@ -9,7 +9,7 @@ namespace particles
     {
     public:
         PointShape(float x, float y);
-        void setPosition(float x, float y);
+        void setPosition(float x, float y) override;
         std::pair<float,float> sample() override;
     
     private:

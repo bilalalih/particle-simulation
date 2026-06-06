@@ -7,7 +7,7 @@ namespace core
         // Initialization Flag
         bool success{ true };
         
-        if (SDL_Init(SDL_INIT_VIDEO) == false)
+        if (!SDL_Init(SDL_INIT_VIDEO))
         {
             SDL_Log("SDL could not initialize! SDL Error: %s\n", SDL_GetError());
             success = false;
@@ -15,14 +15,14 @@ namespace core
         else
         {
             // Create Window with Renderer
-            if (SDL_CreateWindowAndRenderer(
+            if (!SDL_CreateWindowAndRenderer(
                 "Particle Simulator", 
                 screenCfg.screenWidth, 
                 screenCfg.screenHeight,
                 0,
                 &windowAndRenderer.window,
                 &windowAndRenderer.renderer
-                ) == false
+                )
             ){
                 SDL_Log("Window could not be created! SDL Error: %s\n", SDL_GetError());
                 success = false;
@@ -101,6 +101,4 @@ namespace core
     {
         SDL_SetRenderDrawColor(windowAndRenderer.renderer, color.r, color.g, color.b, color.a);
     }
-
-
 }

@@ -20,6 +20,8 @@ namespace particles
         void setRate(float rate);
         void setVelocity(float vx, float vy);
         void setSpread(float degrees);
+        void setParticleLife(float seconds);
+        void setParticleRadius(float radius);
         void setShape(std::unique_ptr<EmissionShape> s);
 
         void update(float dt, ParticleSystem& system);
@@ -30,6 +32,8 @@ namespace particles
         Vec2f velocity{};
 
         float spread{0};
+        float particleLife{15.0f};
+        float particleRadius{4.0f};
         bool active{false};
         float emissionRate{100};
         float accumulator{0.0f};

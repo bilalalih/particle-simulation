@@ -2,7 +2,7 @@
 
 namespace forces
 {
-    DragForce::DragForce(float d) : drag(d)
+    DragForce::DragForce(float dampingCoefficient) : drag(dampingCoefficient)
     {}
 
     void DragForce::apply(particles::Particle& p)

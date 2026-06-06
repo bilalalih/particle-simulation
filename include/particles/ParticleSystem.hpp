@@ -3,6 +3,8 @@
 
 #include <vector>
 #include <memory>
+#include <cstddef>
+#include "collisions/Collider.hpp"
 #include "particles/Particle.hpp"
 #include "forces/Force.hpp"
 #include "rendering/ParticleRenderer.hpp"
@@ -17,7 +19,13 @@ namespace particles
         void emit(float x, float y, int count);
         void resolveFloor(Particle& p, float floor);
         void update(float floor, float dt);
+        void update(float dt);
         void addForce(std::unique_ptr<forces::Force> force);
+        void addCollider(std::unique_ptr<collisions::Collider> collider);
+        void clearForces();
+        void clearColliders();
+        void clear();
+        void setMaxParticles(size_t maxParticles_);
         size_t count() const;
         const std::vector<Particle>& getParticles() const;
         void addParticle(const Particle& particle);
@@ -25,7 +33,10 @@ namespace particles
         private:
         std::vector<Particle> particles;
         std::vector<std::unique_ptr<forces::Force>> forces;
+        std::vector<std::unique_ptr<collisions::Collider>> colliders;
+        size_t maxParticles{20000};
 
+        void resolveColliders(Particle& particle);
         void removeDead();
     };
 }

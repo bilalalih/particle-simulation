@@ -10,7 +10,7 @@ namespace particles
     public:
 
         CircleShape(float x, float y, float r);
-        void setPosition(float x, float y);
+        void setPosition(float x, float y) override;
         
         std::pair<float,float> sample() override;
         

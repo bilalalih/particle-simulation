@@ -50,7 +50,7 @@ namespace particles
         void initRandomParticle(float mx, float my);
         void initRandP();
         void integrate(float dt);
-        int getRadius() const;
+        float getRadius() const;
     };
 }
 

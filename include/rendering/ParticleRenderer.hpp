@@ -11,9 +11,20 @@ namespace rendering
     class ParticleRenderer
     {
     public:
+        enum class Palette
+        {
+            Fire,
+            Rain,
+            Plasma
+        };
+
         bool init(SDL_Renderer* ren, float rad);
         void draw(const particles::Particle& p, const core::Color& color);
-        void drawAll(const std::vector<particles::Particle>& particles);
+        void drawAll(
+            const std::vector<particles::Particle>& particles,
+            Palette palette = Palette::Fire,
+            float lifeScale = 15.0f
+        );
         void destroy();
         
     private:

@@ -45,7 +45,7 @@ public:
    const T& y() const;
 
 private:
-    T data[N];
+    T data[N]{};
 };
 
 typedef Vec<float, 2> Vec2f;

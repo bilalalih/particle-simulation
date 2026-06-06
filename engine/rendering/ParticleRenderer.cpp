@@ -2,6 +2,49 @@
 
 namespace rendering
 {
+    namespace
+    {
+        float clamp01(float value)
+        {
+            if (value < 0.0f) return 0.0f;
+            if (value > 1.0f) return 1.0f;
+            return value;
+        }
+
+        core::Color colorFor(float t, ParticleRenderer::Palette palette)
+        {
+            t = clamp01(t);
+
+            switch (palette)
+            {
+                case ParticleRenderer::Palette::Rain:
+                    return {
+                        static_cast<Uint8>(80 + 90 * t),
+                        static_cast<Uint8>(150 + 80 * t),
+                        255,
+                        static_cast<Uint8>(120 + 100 * t)
+                    };
+
+                case ParticleRenderer::Palette::Plasma:
+                    return {
+                        static_cast<Uint8>(90 + 165 * t),
+                        static_cast<Uint8>(40 + 120 * (1.0f - t)),
+                        static_cast<Uint8>(180 + 60 * t),
+                        230
+                    };
+
+                case ParticleRenderer::Palette::Fire:
+                default:
+                    return {
+                        255,
+                        static_cast<Uint8>(80 + 175 * t),
+                        static_cast<Uint8>(20 + 80 * t),
+                        240
+                    };
+            }
+        }
+    }
+
     bool ParticleRenderer::init(SDL_Renderer* ren, float rad)
     {
         renderer = ren;
@@ -23,7 +66,10 @@ namespace rendering
             SDL_Log("Blend mode setup failed: %s", SDL_GetError());
         }
 
+        SDL_Texture* previousTarget = SDL_GetRenderTarget(renderer);
         SDL_SetRenderTarget(renderer, texture);
+        SDL_SetRenderDrawColor(renderer, 0, 0, 0, 0);
+        SDL_RenderClear(renderer);
         SDL_SetRenderDrawColor(renderer, 255, 255, 255, 255);
 
         int ir = static_cast<int>(radius);
@@ -38,8 +84,7 @@ namespace rendering
             }
         }
 
-        SDL_SetRenderTarget(renderer, nullptr);
-        SDL_RenderPresent(renderer);
+        SDL_SetRenderTarget(renderer, previousTarget);
         return true;
     }
 
@@ -60,19 +105,16 @@ namespace rendering
         }
     }
 
-    void ParticleRenderer::drawAll(const std::vector<particles::Particle>& particles)
+    void ParticleRenderer::drawAll(
+        const std::vector<particles::Particle>& particles,
+        Palette palette,
+        float lifeScale
+    )
     {
         for (auto& p : particles)
         {
-            float t = p.getLife() / 15.0f;
-            
-            core::Color c;
-            c.r = 255;
-            c.g = static_cast<Uint8>(255 * t);
-            c.b = static_cast<Uint8>(255 * t);
-            c.a = 255;
-
-            draw(p, c);
+            float t = p.getLife() / lifeScale;
+            draw(p, colorFor(t, palette));
         }
     }
 

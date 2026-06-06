@@ -4,15 +4,17 @@
 namespace particles
 {
     Particle::Particle() noexcept
-    : position{0.f, 0.f}, velocity{0.f, 0.f}, radius(4), life(0.f)
+    : position{0.f, 0.f}, velocity{0.f, 0.f}, acceleration{0.f, 0.f}, radius(4), life(0.f)
     {
     }
 
-    Particle::Particle(float x, float y, float vx, float vy) : position{ x, y }, velocity{vx , vy}, radius(4), life(0.f)
+    Particle::Particle(float x, float y, float vx, float vy)
+    : position{ x, y }, velocity{vx , vy}, acceleration{0.f, 0.f}, radius(4), life(0.f)
     {
     }
 
-    Particle::Particle(float x, float y, float vx, float vy, float radius_) : position{ x, y }, velocity{vx , vy}, radius(radius_)
+    Particle::Particle(float x, float y, float vx, float vy, float radius_)
+    : position{ x, y }, velocity{vx , vy}, acceleration{0.f, 0.f}, radius(radius_), life(0.f)
     {
     }
 
@@ -178,9 +180,9 @@ namespace particles
         clearForces();               
     }
 
-    int Particle::getRadius() const 
+    float Particle::getRadius() const 
     { 
-        return static_cast<int>(radius); 
+        return radius; 
     }
 
 }

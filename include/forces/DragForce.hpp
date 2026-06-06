@@ -8,7 +8,7 @@ namespace forces
     class DragForce : public Force
     {
     public:
-        DragForce(float drag);
+        DragForce(float dampingCoefficient);
         void apply(particles::Particle& particle) override;
 
     private:
