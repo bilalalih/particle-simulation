@@ -9,7 +9,7 @@ namespace forces
     {
     public:
         virtual ~Force() = default;
-        virtual void apply(particles::Particle& particle, float dt) = 0;
+        virtual void apply(particles::Particle& particle) = 0;
     };
 }
 #endif

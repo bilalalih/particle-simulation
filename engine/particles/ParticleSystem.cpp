@@ -33,7 +33,7 @@ namespace particles
         {
             for (auto& force : forces)
             {
-                force->apply(p, dt);
+                force->apply(p);
             }
 
             p.integrate(dt);

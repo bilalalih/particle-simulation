@@ -1,6 +1,8 @@
 #ifndef PARTICLE_EMITTER_HPP
 #define PARTICLE_EMITTER_HPP
 
+#include "math/Vec.hpp"
+
 namespace particles
 {
     class ParticleSystem;

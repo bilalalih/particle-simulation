@@ -104,6 +104,33 @@ namespace particles
     {
         velocity = vel;
     }
+    
+    void Particle::addForce(float fx, float fy)
+    {
+        acceleration.x() += fx;
+        acceleration.y() += fy;
+    }
+
+    void Particle::addForce(const Vec2f& fv)
+    {
+        acceleration += fv;
+    }
+
+    void Particle::clearForces()
+    {
+        acceleration.x() = 0;
+        acceleration.y() = 0;
+    }
+
+    float Particle::getAX() const 
+    {
+        return acceleration.x();
+    }
+
+    float Particle::getAX() const 
+    {
+        return acceleration.x();
+    }
 
     void Particle::initRandomParticle(float mx, float my)
     {
@@ -133,8 +160,10 @@ namespace particles
 
     void Particle::integrate(float dt)
     {                   
+        velocity += acceleration * dt;
         position += velocity * dt; 
-        life -= dt;               
+        life -= dt;
+        clearForces();               
     }
 
     int Particle::getRadius() const 

@@ -9,7 +9,7 @@ namespace forces
     {
     public:
         DragForce(float drag);
-        void apply(particles::Particle& particle, float dt) override;
+        void apply(particles::Particle& particle) override;
 
     private:
         float drag {};

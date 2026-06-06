@@ -9,7 +9,7 @@ namespace forces
     {
     public:
         GravityForce(float g);
-        void apply(particles::Particle& particle, float dt) override;
+        void apply(particles::Particle& particle) override;
     
     private:
         float gravity {};

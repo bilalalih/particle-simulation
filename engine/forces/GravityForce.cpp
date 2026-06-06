@@ -5,8 +5,8 @@ namespace forces
     GravityForce::GravityForce(float g) : gravity(g)
     {}
 
-    void GravityForce::apply(particles::Particle& p, float dt)
+    void GravityForce::apply(particles::Particle& p)
     {
-        p.addVelocity(0, gravity * dt);
+        p.addForce(0, gravity);   
     }
 }

@@ -10,6 +10,7 @@ namespace particles
     private:
         Vec2f position;
         Vec2f velocity;
+        Vec2f acceleration;
         float radius = 4;
         float life = 0.f;
 
@@ -39,6 +40,11 @@ namespace particles
         void mulVelocity(const Vec2f& factor);
         void setVelocity(float vx, float vy);
         void setVelocity(const Vec2f& vel);
+        void addForce(float fx, float fy);
+        void addForce(const Vec2f& fv);
+        void clearForces();
+        float getAX() const;
+        float getAY() const;
         float getLife() const;
         void setLife(float life);
         void initRandomParticle(float mx, float my);
